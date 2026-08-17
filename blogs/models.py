@@ -19,7 +19,7 @@ class Category(models.Model):
 STATUS_CHOICES = (("Draft", "Draft"), ("Published", "Published"))
 
 
-# creating blog models
+# creating blog models  
 class Blog(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(max_length=150)
