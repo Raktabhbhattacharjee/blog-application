@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Django Blog{% endblock %}
+
+{% block content %}
+<div class="jumbotron p-4 p-md-5 text-white rounded bg-dark">
+    <div class="col-md-8 px-0">
+        <h1 class="display-4 font-italic">Featured Blog Post</h1>
+        <p class="lead my-3">
+            Welcome to the blog. Here is a place to share technical posts and tutorials.
+        </p>
+    </div>
+</div>
+
+
+<!-- Categories -->
+<div class="mb-4">
+    <h2>Categories</h2>
+
+    {% for category in categories %}
+        <a href="#" class="btn btn-outline-primary me-2 mb-2">
+            {{ category.category_name }}
+        </a>
+    {% endfor %}
+</div>
+
+
+<div class="row mb-2">
+
+    <!-- Dummy Post Card 1 -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title">
+                    <a href="#" class="text-dark">Getting Started with Django</a>
+                </h3>
+                <div class="text-muted mb-2">Aug 16, 2026 | Author</div>
+                <p class="card-text">
+                    Learn how Django structures projects, handles views, and renders templates efficiently.
+                </p>
+                <a href="#" class="btn btn-sm btn-outline-secondary">Read post</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dummy Post Card 2 -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title">
+                    <a href="#" class="text-dark">FastAPI vs Django</a>
+                </h3>
+                <div class="text-muted mb-2">Aug 15, 2026 | Author</div>
+                <p class="card-text">
+                    Comparing implicit framework conventions against explicit micro-framework paradigms.
+                </p>
+                <a href="#" class="btn btn-sm btn-outline-secondary">Read post</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
