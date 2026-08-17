@@ -89,5 +89,41 @@
 {% endfor %}
 
 </div>
+<!-- Recent Posts -->
+<div class="row mb-2">
+
+    <h2 class="mb-4">Recent Posts</h2>
+
+    {% for post in recent_posts %}
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+
+                    <h3 class="card-title">
+                        <a href="#" class="text-dark">
+                            {{ post.title }}
+                        </a>
+                    </h3>
+
+                    <div class="text-muted mb-2">
+                        {{ post.created_at }} | {{ post.author }}
+                    </div>
+
+                    <p class="card-text">
+                        {{ post.short_description }}
+                    </p>
+
+                    <a href="#" class="btn btn-sm btn-outline-secondary">
+                        Read post
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+    {% endfor %}
+
+</div>
 
 {% endblock %}

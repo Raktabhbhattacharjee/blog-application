@@ -11,7 +11,7 @@ def home(request):
     featured_posts = Blog.objects.filter(
         is_featured=True,
         status="Published"
-    )
+    ).order_by("-created_at")[:5]
 
     # Fetch all categories
     categories = Category.objects.all()
