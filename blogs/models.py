@@ -18,6 +18,10 @@ class Category(models.Model):
 # just liike enum in fastapi 
 STATUS_CHOICES = (("Draft", "Draft"), ("Published", "Published"))
 
+# one category can have many blog posts but a blog post can belong to only one category
+# eg: sports can have cricket, football, volleyball
+# eg: cricket belongs to sports
+# eg: demon slayer belongs to anime
 
 # creating blog models  
 class Blog(models.Model):
