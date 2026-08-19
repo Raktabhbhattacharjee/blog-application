@@ -4,126 +4,90 @@
 
 {% block content %}
 
-<div class="jumbotron p-4 p-md-5 text-white rounded bg-dark">
+<!-- Hero Banner -->
+<div class="jumbotron p-4 p-md-5 text-white rounded bg-dark mb-4">
     <div class="col-md-8 px-0">
         <h1 class="display-4 font-italic">Featured Blog Post</h1>
         <p class="lead my-3">
-            Welcome to the blog. Here is a place to share technical posts and tutorials.
+            Welcome to the blog. A space for sharing technical posts and backend tutorials.
         </p>
     </div>
 </div>
 
-
-<!-- Categories -->
+<!-- Categories Bar -->
 <div class="mb-4">
-    <h2>Categories</h2>
-
+    <h2 class="h4 mb-3">Categories</h2>
     {% for category in categories %}
-        <a href="#" class="btn btn-outline-primary me-2 mb-2">
+        <a href="{% url 'post_by_category' category.id %}" class="btn btn-outline-primary btn-sm me-2 mb-2">
             {{ category.category_name }}
         </a>
+    {% empty %}
+        <p class="text-muted small">No categories created yet.</p>
     {% endfor %}
 </div>
-
 
 <!-- Featured Posts -->
-<div class="row mb-2">
-
-    {% for post in featured_posts %}
-
-        <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-
-                    <h3 class="card-title">
-                        <a href="#" class="text-dark">
-                            {{ post.title }}
+{% if featured_posts %}
+<div class="mb-5">
+    <h2 class="h4 mb-3">Featured Posts</h2>
+    <div class="row">
+        {% for post in featured_posts %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title h5">
+                            <a href="{% url 'post_detail' post.slug %}" class="text-dark text-decoration-none">
+                                {{ post.title }}
+                            </a>
+                        </h3>
+                        <div class="text-muted small mb-2">
+                            {{ post.created_at|date:"M d, Y" }} | {{ post.author.username }}
+                        </div>
+                        <p class="card-text text-secondary small">
+                            {{ post.short_description }}
+                        </p>
+                        <a href="{% url 'post_detail' post.slug %}" class="btn btn-sm btn-outline-secondary">
+                            Read post &rarr;
                         </a>
-                    </h3>
-
-                    <div class="text-muted mb-2">
-                        {{ post.created_at }} | {{ post.author }}
                     </div>
-
-                    <p class="card-text">
-                        {{ post.short_description }}
-                    </p>
-
-                    <a href="#" class="btn btn-sm btn-outline-secondary">
-                        Read post
-                    </a>
-
                 </div>
             </div>
-        </div>
-
-    {% endfor %}
-    {% for post in posts %}
-
-    <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-
-                <h3 class="card-title">
-                    <a href="#" class="text-dark">
-                        {{ post.title }}
-                    </a>
-                </h3>
-
-                <div class="text-muted mb-2">
-                    {{ post.created_at }} | {{ post.author }}
-                </div>
-
-                <p class="card-text">
-                    {{ post.short_description }}
-                </p>
-
-                <a href="#" class="btn btn-sm btn-outline-secondary">
-                    Read post
-                </a>
-
-            </div>
-        </div>
+        {% endfor %}
     </div>
-
-{% endfor %}
-
 </div>
-<!-- Recent Posts -->
-<div class="row mb-2">
+{% endif %}
 
-    <h2 class="mb-4">Recent Posts</h2>
-
-    {% for post in recent_posts %}
-
-        <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-
-                    <h3 class="card-title">
-                        <a href="#" class="text-dark">
-                            {{ post.title }}
+<!-- Recent / All Posts -->
+<div>
+    <h2 class="h4 mb-3">Recent Posts</h2>
+    <div class="row">
+        {% for post in posts %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title h5">
+                            <a href="{% url 'post_detail' post.slug %}" class="text-dark text-decoration-none">
+                                {{ post.title }}
+                            </a>
+                        </h3>
+                        <div class="text-muted small mb-2">
+                            {{ post.created_at|date:"M d, Y" }} | {{ post.author.username }}
+                        </div>
+                        <p class="card-text text-secondary small">
+                            {{ post.short_description }}
+                        </p>
+                        <a href="{% url 'post_detail' post.slug %}" class="btn btn-sm btn-outline-secondary">
+                            Read post &rarr;
                         </a>
-                    </h3>
-
-                    <div class="text-muted mb-2">
-                        {{ post.created_at }} | {{ post.author }}
                     </div>
-
-                    <p class="card-text">
-                        {{ post.short_description }}
-                    </p>
-
-                    <a href="#" class="btn btn-sm btn-outline-secondary">
-                        Read post
-                    </a>
-
                 </div>
             </div>
-        </div>
-
-    {% endfor %}
-
+        {% empty %}
+            <div class="col-12">
+                <p class="text-muted">No recent posts available.</p>
+            </div>
+        {% endfor %}
+    </div>
 </div>
 
 {% endblock %}
