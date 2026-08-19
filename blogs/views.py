@@ -5,6 +5,8 @@ def post_by_category(request, category_id):
     # Fetch category object or return 404
     category = get_object_or_404(Category, id=category_id)
 
+    # use try except when we want to custom action if someting doesnt exist in database 
+    # use getobject404 is someting doesnt exist and i want to redirrect it to the home page 
     # Filter published posts for this category
     posts = Blog.objects.filter(
         status="Published",
