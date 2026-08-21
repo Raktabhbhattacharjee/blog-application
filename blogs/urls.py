@@ -2,14 +2,15 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Category URL (Existing)
+    # categoru url basiclly when i want to do is is someone clicks on this /category/1
     path(
-        '<int:category_id>/',
+        'category/<int:category_id>/',
         views.post_by_category,
         name='post_by_category'
     ),
     
-    # Single Post Detail URL (ADD THIS)
+    # Single Post Detail Route: Matches URL slugs (e.g., /my-first-post/)
+    # Equivalent to FastAPI: @app.get("/{slug:str}")
     path(
         '<slug:slug>/',
         views.post_detail,

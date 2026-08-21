@@ -1,30 +1,41 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ post.title }}{% endblock %}
+{% block title %}{{ post.title }} | Django Blog{% endblock %}
 
 {% block content %}
-    <article class="bg-white p-4 rounded shadow-sm">
-        <a href="{% url 'post_by_category' post.category.id %}" class="badge bg-secondary text-decoration-none mb-2">
-            {{ post.category.category_name }}
-        </a>
+<div class="row justify-content-center">
+    <div class="col-md-8">
         
-        <h1 class="fw-bold mb-3">{{ post.title }}</h1>
-        <p class="text-muted small border-bottom pb-3">
-            Published on {{ post.created_at|date:"F j, Y" }} by <strong>{{ post.author.username }}</strong>
-        </p>
+        <!-- ARTICLE HEADER -->
+        <article class="blog-post">
+            <h1 class="fw-bold mb-3">{{ post.title }}</h1>
+            
+            <div class="text-muted mb-4 pb-2 border-bottom d-flex align-items-center gap-3">
+                <span class="badge bg-primary">{{ post.category.category_name }}</span>
+                <small>By <strong>{{ post.author.username }}</strong></small>
+                <small>&bull;</small>
+                <small>{{ post.created_at|date:"F j, Y" }}</small>
+            </div>
 
-        {% if post.feature_image %}
-            <img src="{{ post.feature_image.url }}" class="img-fluid rounded mb-4 w-100 object-fit-cover" style="max-height: 350px;">
-        {% endif %}
+            <!-- FEATURED IMAGE (If available) -->
+            {% if post.featured_image %}
+                <img src="{{ post.featured_image.url }}" class="img-fluid rounded mb-4 w-100" alt="{{ post.title }}">
+            {% endif %}
 
-        <div class="lh-lg text-dark">
-            {{ post.blog_body|linebreaks }}
-        </div>
+            <!-- SHORT DESCRIPTION / INTRO -->
+            <p class="lead text-secondary fw-semibold mb-4">
+                {{ post.short_description }}
+            </p>
 
-        <div class="mt-4 pt-3 border-top">
-            <a href="{% url 'post_by_category' post.category.id %}" class="btn btn-sm btn-outline-secondary">
-                &larr; Back to {{ post.category.category_name }}
-            </a>
-        </div>
-    </article>
+            <!-- FULL BODY TEXT -->
+            <div class="lh-lg mb-5">
+                {{ post.blog_body|linebreaks }}
+            </div>
+            
+            <!-- BACK BUTTON -->
+            <a href="/" class="btn btn-outline-secondary btn-sm">&larr; Back to Home</a>
+        </article>
+
+    </div>
+</div>
 {% endblock %}
