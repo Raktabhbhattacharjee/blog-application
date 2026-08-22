@@ -9,3 +9,18 @@ wheels/
 # Virtual environments
 .venv
 .env
+
+# Database
+db.sqlite3
+
+# IDE & Documentation
+instructions.md
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Media & Static files
+/media/
+/static/
