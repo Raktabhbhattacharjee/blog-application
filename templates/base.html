@@ -107,6 +107,24 @@
                     <span class="fw-semibold text-white">Django Blog</span>
                     <span class="d-block small">Built while learning Django.</span>
                 </div>
+
+                <!-- SOCIAL LINKS -->
+                {% if social_links %}
+                <div class="col-12 col-md text-center">
+                    <div class="d-flex justify-content-center gap-3">
+                        {% for link in social_links %}
+                            <a href="{{ link.url }}"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="text-white-50 fs-5"
+                               title="{{ link.platform }}">
+                                <i class="bi {{ link.icon_class }}"></i>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
                 <div class="col-md-6 text-center text-md-end small">
                     &copy; 2026 Django Blog Project
                 </div>
