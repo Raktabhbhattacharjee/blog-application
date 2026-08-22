@@ -1,0 +1,64 @@
+{% comment %}
+Shared single-post article markup. Expects a `post` (blogs.models.Blog) in context.
+Used by blog/blogs.html (aliases `single_post` -> `post`) and blog/post_detail.html,
+so both detail routes stay identical instead of drifting apart.
+{% endcomment %}
+
+<!-- BREADCRUMB -->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb small">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Home</a></li>
+    <li class="breadcrumb-item">
+      <a href="{% url 'post_by_category' post.category.id %}" class="text-decoration-none">
+        {{ post.category.category_name }}
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ post.title|truncatewords:5 }}</li>
+  </ol>
+</nav>
+
+<article class="bg-white rounded-4 shadow-sm p-4 p-md-5">
+
+  <!-- ARTICLE HEADER -->
+  <header class="mb-4">
+    <div class="d-flex align-items-center gap-2 mb-3 small">
+      <a href="{% url 'post_by_category' post.category.id %}"
+         class="badge text-bg-primary text-decoration-none">
+        {{ post.category.category_name }}
+      </a>
+      <span class="text-muted">{{ post.created_at|date:"F j, Y" }}</span>
+    </div>
+
+    <h1 class="fw-bold display-6 mb-3">{{ post.title }}</h1>
+
+    <p class="text-muted mb-0">
+      By <strong class="text-dark">{{ post.author.username|default:"Unknown" }}</strong>
+    </p>
+  </header>
+
+  <!-- FEATURED IMAGE (model field is `feature_image`) -->
+  {% if post.feature_image %}
+    <img src="{{ post.feature_image.url }}"
+         class="article-hero rounded-3 shadow-sm mb-4"
+         alt="{{ post.title }}">
+  {% endif %}
+
+  <!-- SHORT DESCRIPTION (LEAD INTRO) -->
+  <p class="lead fw-semibold text-secondary border-start border-4 border-primary ps-3 mb-4">
+    {{ post.short_description }}
+  </p>
+
+  <!-- FULL ARTICLE BODY -->
+  <div class="article-body mb-5">
+    {{ post.blog_body|linebreaks }}
+  </div>
+
+  <!-- FOOTER NAVIGATION -->
+  <footer class="pt-3 border-top d-flex flex-wrap gap-2">
+    <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm">&larr; Back to home</a>
+    <a href="{% url 'post_by_category' post.category.id %}" class="btn btn-outline-primary btn-sm">
+      More in {{ post.category.category_name }}
+    </a>
+  </footer>
+
+</article>

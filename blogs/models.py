@@ -26,7 +26,9 @@ STATUS_CHOICES = (("Draft", "Draft"), ("Published", "Published"))
 # creating blog models  
 class Blog(models.Model):
     title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=150)
+    # unique: the detail URL looks a post up by slug alone, so duplicates
+    # would make get_object_or_404() raise MultipleObjectsReturned
+    slug = models.SlugField(max_length=150, unique=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     feature_image = models.ImageField(upload_to="blog/uploads/%Y/%m/%d")
@@ -40,6 +42,37 @@ class Blog(models.Model):
     is_featured = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        # newest first, so "Recent posts" listings are actually recent
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.title
+
+
+# about us and social link models 
+class SocialLink(models.Model):
+    platform = models.CharField(max_length=50)  # e.g., GitHub, Twitter, LinkedIn
+    url = models.URLField()
+    icon_class = models.CharField(
+        max_length=50, 
+        help_text="Bootstrap or FontAwesome icon class, e.g., 'bi-github'"
+    )
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.platform
+
+
+class About(models.Model):
+    title = models.CharField(max_length=200, default="About Us")
+    content = models.TextField()
+    profile_image = models.ImageField(upload_to='about/', blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = "About"
 
     def __str__(self):
         return self.title

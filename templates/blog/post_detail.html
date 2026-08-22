@@ -1,41 +1,12 @@
 {% extends 'base.html' %}
 
 {% block title %}{{ post.title }} | Django Blog{% endblock %}
+{% block meta_description %}{{ post.short_description|truncatewords:25 }}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
-        
-        <!-- ARTICLE HEADER -->
-        <article class="blog-post">
-            <h1 class="fw-bold mb-3">{{ post.title }}</h1>
-            
-            <div class="text-muted mb-4 pb-2 border-bottom d-flex align-items-center gap-3">
-                <span class="badge bg-primary">{{ post.category.category_name }}</span>
-                <small>By <strong>{{ post.author.username }}</strong></small>
-                <small>&bull;</small>
-                <small>{{ post.created_at|date:"F j, Y" }}</small>
-            </div>
-
-            <!-- FEATURED IMAGE (If available) -->
-            {% if post.featured_image %}
-                <img src="{{ post.featured_image.url }}" class="img-fluid rounded mb-4 w-100" alt="{{ post.title }}">
-            {% endif %}
-
-            <!-- SHORT DESCRIPTION / INTRO -->
-            <p class="lead text-secondary fw-semibold mb-4">
-                {{ post.short_description }}
-            </p>
-
-            <!-- FULL BODY TEXT -->
-            <div class="lh-lg mb-5">
-                {{ post.blog_body|linebreaks }}
-            </div>
-            
-            <!-- BACK BUTTON -->
-            <a href="/" class="btn btn-outline-secondary btn-sm">&larr; Back to Home</a>
-        </article>
-
-    </div>
+  <div class="col-lg-8">
+    {% include 'blog/includes/post_article.html' %}
+  </div>
 </div>
 {% endblock %}

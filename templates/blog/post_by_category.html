@@ -1,25 +1,40 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ category.category_name }} - Posts{% endblock %}
+{% block title %}{{ category.category_name }} | Django Blog{% endblock %}
 
 {% block content %}
-    <h2 class="mb-4">Category: <span class="text-primary">{{ category.category_name }}</span></h2>
 
-    <div class="row">
-        {% for post in posts %}
-            <div class="col-md-6 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <h4 class="card-title">{{ post.title }}</h4>
-                        <p class="card-text text-muted">{{ post.short_description }}</p>
-                        <a href="{% url 'post_detail' post.slug %}" class="btn btn-outline-primary btn-sm">Read Post &rarr;</a>
-                    </div>
-                </div>
-            </div>
-        {% empty %}
-            <div class="col-12">
-                <div class="alert alert-info">No published posts found in this category.</div>
-            </div>
-        {% endfor %}
+<!-- BREADCRUMB -->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb small">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ category.category_name }}</li>
+  </ol>
+</nav>
+
+<!-- CATEGORY HEADER -->
+<header class="mb-4 pb-3 border-bottom">
+  <p class="eyebrow text-uppercase small fw-semibold text-secondary mb-1">Category</p>
+  <div class="d-flex flex-wrap align-items-baseline justify-content-between gap-2">
+    <h1 class="h2 fw-bold mb-0">{{ category.category_name }}</h1>
+    <span class="text-muted small">
+      {{ posts|length }} published post{{ posts|length|pluralize }}
+    </span>
+  </div>
+</header>
+
+<!-- POST GRID -->
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+  {% for post in posts %}
+    <div class="col">{% include 'blog/includes/post_card.html' %}</div>
+  {% empty %}
+    <div class="col-12">
+      <div class="alert alert-info mb-0">
+        No published posts found in this category yet.
+        <a href="{% url 'home' %}" class="alert-link">Back to home</a>.
+      </div>
     </div>
+  {% endfor %}
+</div>
+
 {% endblock %}

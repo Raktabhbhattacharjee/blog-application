@@ -1,31 +1,22 @@
 from django.shortcuts import render
-from blogs.models import Category, Blog
+from blogs.models import Blog
 
 
 def home(request):
     """
     Renders the blog homepage.
+
+    Note: `categories` is injected site-wide by blogs/context_processors.py,
+    so it does not need to be added here.
     """
 
-    # Fetch featured and published blog posts
-    featured_posts = Blog.objects.filter(
-        is_featured=True,
-        status="Published"
-    ).order_by("-created_at")[:5]
-
-    # Fetch all categories
-    categories = Category.objects.all()
-
-    # Fetch non-featured and published blog posts
-    posts = Blog.objects.filter(
-        is_featured=False,
-        status="Published"
-    )
+    # Newest first comes from Blog.Meta.ordering
+    # select_related avoids a query per card for category/author
+    published = Blog.objects.filter(status="Published").select_related("category", "author")
 
     context = {
-        "categories": categories,
-        "featured_posts": featured_posts,
-        "posts": posts,
+        "featured_posts": published.filter(is_featured=True)[:4],
+        "posts": published.filter(is_featured=False),
     }
 
     return render(request, "blog/home.html", context)

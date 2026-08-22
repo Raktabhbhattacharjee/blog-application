@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if about %}{{ about.title }}{% else %}About Us{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+
+            <!-- Profile / About Image -->
+            {% if about and about.profile_image %}
+                <img src="{{ about.profile_image.url }}" 
+                     alt="{{ about.title }}" 
+                     class="rounded-circle img-fluid mb-4 shadow" 
+                     style="width: 180px; height: 180px; object-fit: cover;">
+            {% endif %}
+
+            <!-- Title -->
+            <h1 class="fw-bold mb-3">
+                {% if about %}{{ about.title }}{% else %}About Us{% endif %}
+            </h1>
+
+            <!-- Content -->
+            <div class="lead text-secondary text-start mb-5">
+                {% if about %}
+                    {{ about.content|linebreaks }}
+                {% else %}
+                    <p class="text-center text-muted fs-6">
+                        No about details added yet. Please add content from the admin panel.
+                    </p>
+                {% endif %}
+            </div>
+
+            <!-- Social Links Section -->
+            <div class="border-top pt-4">
+                <h5 class="fw-semibold text-uppercase text-muted mb-3" style="letter-spacing: 1px;">
+                    Connect With Me
+                </h5>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    {% for link in social_links %}
+                        <a href="{{ link.url }}" 
+                           target="_blank" 
+                           rel="noopener noreferrer" 
+                           class="btn btn-outline-dark d-inline-flex align-items-center gap-2 px-3 py-2 m-1">
+                            <i class="bi {{ link.icon_class }}"></i>
+                            <span>{{ link.platform }}</span>
+                        </a>
+                    {% empty %}
+                        <p class="text-muted small">No social links added yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
