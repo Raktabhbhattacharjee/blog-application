@@ -4,9 +4,7 @@
 {% block meta_description %}{{ post.short_description|truncatewords:25 }}{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-lg-8">
-    {% include 'blog/includes/post_article.html' %}
-  </div>
+<div class="mx-auto max-w-3xl">
+  {% include 'blog/includes/post_article.html' %}
 </div>
 {% endblock %}

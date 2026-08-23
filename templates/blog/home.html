@@ -4,51 +4,54 @@
 
 {% block content %}
 
-<!-- HERO BANNER -->
-<section class="hero text-white rounded-4 shadow-sm p-4 p-md-5 mb-5">
-  <div class="row">
-    <div class="col-lg-8">
-      <p class="eyebrow text-uppercase small fw-semibold text-white-50 mb-2">Welcome</p>
-      <h1 class="display-5 fw-bold mb-3">Notes on code, health &amp; everything in between</h1>
-      <p class="lead text-white-50 mb-4">
-        A space for sharing technical posts, backend tutorials and the occasional detour.
-      </p>
-      <a href="#recent-posts" class="btn btn-light btn-sm fw-semibold px-3">Browse posts</a>
-    </div>
+<!-- ================= HERO ================= -->
+<section class="mb-14 overflow-hidden rounded-3xl bg-slate-900 px-6 py-14 sm:px-12 sm:py-20">
+  <div class="max-w-2xl">
+    <p class="mb-3 text-xs font-semibold tracking-[0.18em] text-brand-300 uppercase">Welcome</p>
+    <h1 class="text-3xl leading-tight text-balance text-white sm:text-5xl">
+      Notes on code, health &amp; everything in between
+    </h1>
+    <p class="mt-5 text-lg leading-relaxed text-slate-400">
+      A space for sharing technical posts, backend tutorials and the occasional detour.
+    </p>
+    <a href="#recent-posts" class="btn mt-8 bg-white text-slate-900 hover:bg-slate-100">
+      Browse posts
+      <span aria-hidden="true">&darr;</span>
+    </a>
   </div>
 </section>
 
-<!-- FEATURED POSTS -->
+<!-- ================= FEATURED POSTS ================= -->
 {% if featured_posts %}
-<section class="mb-5">
-  <div class="d-flex align-items-baseline justify-content-between mb-3">
-    <h2 class="h4 fw-bold mb-0">Featured</h2>
-    <span class="text-muted small">
+<section class="mb-14">
+  <div class="mb-6 flex items-end justify-between gap-4">
+    <h2 class="text-xl sm:text-2xl">Featured</h2>
+    <span class="text-sm text-slate-400">
       {{ featured_posts|length }} post{{ featured_posts|length|pluralize }}
     </span>
   </div>
 
-  <div class="row row-cols-1 row-cols-md-2 g-4">
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
     {% for post in featured_posts %}
-      <div class="col">{% include 'blog/includes/post_card.html' %}</div>
+      {% include 'blog/includes/post_card.html' %}
     {% endfor %}
   </div>
 </section>
 {% endif %}
 
-<!-- RECENT POSTS -->
+<!-- ================= RECENT POSTS ================= -->
 <section id="recent-posts">
-  <div class="d-flex align-items-baseline justify-content-between mb-3">
-    <h2 class="h4 fw-bold mb-0">Recent posts</h2>
+  <div class="mb-6 flex items-end justify-between gap-4">
+    <h2 class="text-xl sm:text-2xl">Recent posts</h2>
   </div>
 
-  <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
     {% for post in posts %}
-      <div class="col">{% include 'blog/includes/post_card.html' %}</div>
+      {% include 'blog/includes/post_card.html' %}
     {% empty %}
-      <div class="col-12">
-        <div class="alert alert-info mb-0">No posts have been published yet.</div>
-      </div>
+      <p class="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center text-slate-500">
+        No posts have been published yet.
+      </p>
     {% endfor %}
   </div>
 </section>

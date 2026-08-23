@@ -3,16 +3,16 @@
 {% block title %}404 - Page Not Found{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-lg-7">
-    <div class="text-center bg-white rounded-4 shadow-sm py-5 px-4">
-      <p class="display-1 fw-bold text-danger mb-0">404</p>
-      <h1 class="h3 fw-semibold mb-3">Oops! Page not found</h1>
-      <p class="text-muted lead mb-4">
-        The category, article, or page you are looking for doesn't exist or has been moved.
-      </p>
-      <a href="{% url 'home' %}" class="btn btn-primary px-4">&larr; Back to home</a>
-    </div>
+<div class="mx-auto max-w-xl">
+  <div class="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
+    <p class="text-6xl font-bold tracking-tight text-brand-600 sm:text-7xl">404</p>
+    <h1 class="mt-4 text-2xl">Oops! Page not found</h1>
+    <p class="mx-auto mt-3 max-w-sm leading-relaxed text-slate-500">
+      The category, article, or page you are looking for doesn't exist or has been moved.
+    </p>
+    <a href="{% url 'home' %}" class="btn btn-primary mt-8">
+      <span aria-hidden="true">&larr;</span> Back to home
+    </a>
   </div>
 </div>
 {% endblock %}

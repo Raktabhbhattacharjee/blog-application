@@ -1,0 +1,125 @@
+/* ==========================================================================
+   Tailwind CSS source for the Django blog.
+
+   This file is the INPUT. The compiled stylesheet is generated at
+   blog_main/static/css/site.css and served through {% static %} —
+   never edit that file by hand, it is overwritten on every build.
+
+   Build once:
+     tools/tailwindcss.exe -i blog_main/static_src/input.css -o blog_main/static/css/site.css --minify
+
+   Rebuild on save (use this while developing):
+     tools/tailwindcss.exe -i blog_main/static_src/input.css -o blog_main/static/css/site.css --watch
+   ========================================================================== */
+
+@import "tailwindcss";
+
+/* Tailwind scans source files for class names. Point it at the Django
+   templates so utilities used only inside .html files are never dropped.
+   Path is relative to THIS file: ../../ == the project root. */
+@source "../../templates/**/*.html";
+
+/* --------------------------------------------------------------------------
+   Design tokens. One accent colour ("brand") over a slate neutral scale —
+   change the values below to re-skin the whole site in one place.
+   -------------------------------------------------------------------------- */
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-400: #818cf8;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
+  --color-brand-800: #3730a3;
+  --color-brand-900: #312e81;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-700 antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-semibold tracking-tight text-slate-900;
+  }
+
+  /* keep in-page anchor targets clear of the sticky header */
+  [id] {
+    scroll-margin-top: 5rem;
+  }
+}
+
+@layer components {
+  /* ---- Long-form article body -------------------------------------------
+     blog_body is rendered through |linebreaks, which emits bare <p> tags we
+     cannot add classes to — so they are styled by descendant selectors here.
+     (Hand-rolled instead of @tailwindcss/typography: no plugin to install,
+     and the standalone CLI stays dependency-free.)                        */
+  .article-prose {
+    @apply text-[1.0625rem] leading-8 text-slate-700;
+  }
+  .article-prose > p {
+    @apply mb-6;
+  }
+  .article-prose > p:last-child {
+    @apply mb-0;
+  }
+  .article-prose h2 {
+    @apply mt-10 mb-3 text-2xl;
+  }
+  .article-prose h3 {
+    @apply mt-8 mb-2 text-xl;
+  }
+  .article-prose a {
+    @apply text-brand-700 underline underline-offset-2 hover:text-brand-800;
+  }
+  .article-prose strong {
+    @apply font-semibold text-slate-900;
+  }
+  .article-prose ul {
+    @apply mb-6 list-disc space-y-2 pl-6;
+  }
+  .article-prose ol {
+    @apply mb-6 list-decimal space-y-2 pl-6;
+  }
+  .article-prose blockquote {
+    @apply my-6 border-l-4 border-brand-200 pl-4 text-slate-600 italic;
+  }
+  .article-prose code {
+    @apply rounded bg-slate-100 px-1.5 py-0.5 text-[0.9em] text-slate-800;
+  }
+  .article-prose img {
+    @apply my-6 rounded-xl;
+  }
+
+  /* ---- Small reusable bits --------------------------------------------- */
+  .pill {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium;
+  }
+  .pill-brand {
+    @apply bg-brand-50 text-brand-700 ring-1 ring-brand-200 ring-inset;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition;
+  }
+  .btn-primary {
+    @apply bg-brand-600 text-white hover:bg-brand-700;
+  }
+  .btn-ghost {
+    @apply border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50;
+  }
+  .nav-link {
+    @apply rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900;
+  }
+  .nav-link-active {
+    @apply bg-brand-50 text-brand-700 hover:bg-brand-100 hover:text-brand-800;
+  }
+}

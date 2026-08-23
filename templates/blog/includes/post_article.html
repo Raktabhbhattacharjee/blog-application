@@ -5,60 +5,66 @@ so both detail routes stay identical instead of drifting apart.
 {% endcomment %}
 
 <!-- BREADCRUMB -->
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb small">
-    <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Home</a></li>
-    <li class="breadcrumb-item">
-      <a href="{% url 'post_by_category' post.category.id %}" class="text-decoration-none">
+<nav aria-label="Breadcrumb" class="mb-6">
+  <ol class="flex flex-wrap items-center gap-1.5 text-sm text-slate-400">
+    <li><a href="{% url 'home' %}" class="transition hover:text-brand-700">Home</a></li>
+    <li aria-hidden="true">/</li>
+    <li>
+      <a href="{% url 'post_by_category' post.category.id %}" class="transition hover:text-brand-700">
         {{ post.category.category_name }}
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page">{{ post.title|truncatewords:5 }}</li>
+    <li aria-hidden="true">/</li>
+    <li class="text-slate-600" aria-current="page">{{ post.title|truncatewords:5 }}</li>
   </ol>
 </nav>
 
-<article class="bg-white rounded-4 shadow-sm p-4 p-md-5">
-
-  <!-- ARTICLE HEADER -->
-  <header class="mb-4">
-    <div class="d-flex align-items-center gap-2 mb-3 small">
-      <a href="{% url 'post_by_category' post.category.id %}"
-         class="badge text-bg-primary text-decoration-none">
-        {{ post.category.category_name }}
-      </a>
-      <span class="text-muted">{{ post.created_at|date:"F j, Y" }}</span>
-    </div>
-
-    <h1 class="fw-bold display-6 mb-3">{{ post.title }}</h1>
-
-    <p class="text-muted mb-0">
-      By <strong class="text-dark">{{ post.author.username|default:"Unknown" }}</strong>
-    </p>
-  </header>
+<article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
   <!-- FEATURED IMAGE (model field is `feature_image`) -->
   {% if post.feature_image %}
     <img src="{{ post.feature_image.url }}"
-         class="article-hero rounded-3 shadow-sm mb-4"
+         class="aspect-[21/9] w-full bg-slate-100 object-cover"
          alt="{{ post.title }}">
   {% endif %}
 
-  <!-- SHORT DESCRIPTION (LEAD INTRO) -->
-  <p class="lead fw-semibold text-secondary border-start border-4 border-primary ps-3 mb-4">
-    {{ post.short_description }}
-  </p>
+  <div class="p-6 sm:p-10">
 
-  <!-- FULL ARTICLE BODY -->
-  <div class="article-body mb-5">
-    {{ post.blog_body|linebreaks }}
+    <!-- ARTICLE HEADER -->
+    <header class="mb-8 border-b border-slate-100 pb-8">
+      <div class="mb-4 flex flex-wrap items-center gap-2">
+        <a href="{% url 'post_by_category' post.category.id %}" class="pill pill-brand transition hover:bg-brand-100">
+          {{ post.category.category_name }}
+        </a>
+        <time class="text-sm text-slate-400">{{ post.created_at|date:"F j, Y" }}</time>
+      </div>
+
+      <h1 class="text-3xl leading-tight text-balance sm:text-4xl">{{ post.title }}</h1>
+
+      <p class="mt-4 text-sm text-slate-500">
+        By <span class="font-medium text-slate-900">{{ post.author.username|default:"Unknown" }}</span>
+      </p>
+    </header>
+
+    <!-- SHORT DESCRIPTION (LEAD INTRO) -->
+    <p class="mb-8 border-l-4 border-brand-500 pl-5 text-lg leading-relaxed font-medium text-slate-600">
+      {{ post.short_description }}
+    </p>
+
+    <!-- FULL ARTICLE BODY -->
+    <div class="article-prose">
+      {{ post.blog_body|linebreaks }}
+    </div>
+
+    <!-- FOOTER NAVIGATION -->
+    <footer class="mt-10 flex flex-wrap gap-3 border-t border-slate-100 pt-8">
+      <a href="{% url 'home' %}" class="btn btn-ghost">
+        <span aria-hidden="true">&larr;</span> Back to home
+      </a>
+      <a href="{% url 'post_by_category' post.category.id %}" class="btn btn-primary">
+        More in {{ post.category.category_name }}
+      </a>
+    </footer>
+
   </div>
-
-  <!-- FOOTER NAVIGATION -->
-  <footer class="pt-3 border-top d-flex flex-wrap gap-2">
-    <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm">&larr; Back to home</a>
-    <a href="{% url 'post_by_category' post.category.id %}" class="btn btn-outline-primary btn-sm">
-      More in {{ post.category.category_name }}
-    </a>
-  </footer>
-
 </article>

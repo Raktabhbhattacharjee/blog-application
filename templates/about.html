@@ -5,55 +5,59 @@
 {% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
+<div class="mx-auto max-w-3xl">
 
+    <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
+
+        <header class="text-center">
             <!-- Profile / About Image -->
             {% if about and about.profile_image %}
-                <img src="{{ about.profile_image.url }}" 
-                     alt="{{ about.title }}" 
-                     class="rounded-circle img-fluid mb-4 shadow" 
-                     style="width: 180px; height: 180px; object-fit: cover;">
+                <img src="{{ about.profile_image.url }}"
+                     alt="{{ about.title }}"
+                     class="mx-auto mb-6 h-40 w-40 rounded-full bg-slate-100 object-cover ring-4 ring-brand-50">
             {% endif %}
 
             <!-- Title -->
-            <h1 class="fw-bold mb-3">
+            <h1 class="text-3xl sm:text-4xl">
                 {% if about %}{{ about.title }}{% else %}About Us{% endif %}
             </h1>
+        </header>
 
-            <!-- Content -->
-            <div class="lead text-secondary text-start mb-5">
-                {% if about %}
+        <!-- Content -->
+        <div class="mt-8">
+            {% if about %}
+                <div class="article-prose">
                     {{ about.content|linebreaks }}
-                {% else %}
-                    <p class="text-center text-muted fs-6">
-                        No about details added yet. Please add content from the admin panel.
-                    </p>
-                {% endif %}
-            </div>
-
-            <!-- Social Links Section -->
-            <div class="border-top pt-4">
-                <h5 class="fw-semibold text-uppercase text-muted mb-3" style="letter-spacing: 1px;">
-                    Connect With Me
-                </h5>
-                <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    {% for link in social_links %}
-                        <a href="{{ link.url }}" 
-                           target="_blank" 
-                           rel="noopener noreferrer" 
-                           class="btn btn-outline-dark d-inline-flex align-items-center gap-2 px-3 py-2 m-1">
-                            <i class="bi {{ link.icon_class }}"></i>
-                            <span>{{ link.platform }}</span>
-                        </a>
-                    {% empty %}
-                        <p class="text-muted small">No social links added yet.</p>
-                    {% endfor %}
                 </div>
-            </div>
-
+            {% else %}
+                <p class="rounded-xl border border-dashed border-slate-300 px-6 py-10 text-center text-slate-500">
+                    No about details added yet. Please add content from the admin panel.
+                </p>
+            {% endif %}
         </div>
-    </div>
+
+        <!-- Social Links Section -->
+        <div class="mt-10 border-t border-slate-100 pt-8 text-center">
+            <h2 class="text-xs font-semibold tracking-[0.18em] text-slate-400 uppercase">
+                Connect With Me
+            </h2>
+
+            <div class="mt-5 flex flex-wrap justify-center gap-3">
+                {% for link in social_links %}
+                    <a href="{{ link.url }}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="btn btn-ghost hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700">
+                        <i class="bi {{ link.icon_class }}" aria-hidden="true"></i>
+                        <span>{{ link.platform }}</span>
+                    </a>
+                {% empty %}
+                    <p class="text-sm text-slate-400">No social links added yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </article>
+
 </div>
 {% endblock %}

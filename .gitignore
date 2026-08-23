@@ -24,3 +24,7 @@ Thumbs.db
 # Media & Static files
 /media/
 /static/
+
+# Tailwind standalone CLI binary (~108 MB) — re-download with:
+# curl -L -o tools/tailwindcss.exe https://github.com/tailwindlabs/tailwindcss/releases/download/v4.3.3/tailwindcss-windows-x64.exe
+/tools/

@@ -1,139 +1,127 @@
-<!DOCTYPE html>
-<html lang="en">
+{% load static %}<!DOCTYPE html>
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{% block meta_description %}A Django blog covering tech, health, business and more.{% endblock %}">
     <title>{% block title %}Django Blog{% endblock %}</title>
 
-    <!-- Bootstrap 5 CSS -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
+    <!-- Compiled Tailwind stylesheet (source: blog_main/static_src/input.css) -->
+    <link rel="stylesheet" href="{% static 'css/site.css' %}">
+
+    <!-- Bootstrap ICONS font only — not the Bootstrap CSS framework.
+         Required because SocialLink.icon_class stores values like "bi-github",
+         so dropping this link would leave every social icon blank. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <style>
-        :root {
-            --bs-body-font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            --brand-surface: #f6f7f9;
-        }
-        body { background-color: var(--brand-surface); }
-
-        /* Fixed ratio thumbnails: every card image crops instead of stretching */
-        .post-thumb {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            object-fit: cover;
-            background-color: #e9ecef;
-        }
-        .post-card { transition: transform .15s ease, box-shadow .15s ease; }
-        .post-card:hover { transform: translateY(-3px); box-shadow: 0 .75rem 1.5rem rgba(0, 0, 0, .09) !important; }
-        .post-card .card-title a { color: inherit; text-decoration: none; }
-        .post-card .card-title a:hover { color: var(--bs-primary); }
-
-        /* Keeps every card body the same visual weight regardless of copy length */
-        .clamp-3 {
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .article-body { font-size: 1.075rem; line-height: 1.85; }
-        .article-body p:last-child { margin-bottom: 0; }
-        .article-hero { aspect-ratio: 21 / 9; object-fit: cover; width: 100%; }
-        .navbar-brand { letter-spacing: -.02em; }
-        .hero { background: linear-gradient(135deg, #1f2937 0%, #111827 60%, #0b1220 100%); }
-        .eyebrow { letter-spacing: .12em; }
-        /* keep in-page anchors clear of the sticky navbar */
-        section[id] { scroll-margin-top: 5rem; }
-    </style>
     {% block extra_css %}{% endblock %}
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="flex min-h-full flex-col">
 
-    <!-- GLOBAL NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'home' %}">Django Blog</a>
+    <!-- ================= HEADER / NAV ================= -->
+    <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/85 backdrop-blur">
+        <nav class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
 
-            <button class="navbar-toggler border-0 shadow-none" type="button"
-                    data-bs-toggle="collapse" data-bs-target="#mainNav"
-                    aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            {# Pure-CSS mobile menu toggle: sr-only keeps it keyboard-operable. #}
+            <input id="nav-toggle" type="checkbox" class="peer sr-only" aria-label="Toggle navigation menu">
 
-            <div class="collapse navbar-collapse" id="mainNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link{% if request.path == '/' %} active fw-semibold{% endif %}"
-                           href="{% url 'home' %}">Home</a>
-                    </li>
+            <div class="flex h-16 items-center justify-between gap-4">
+
+                <!-- LOGO -->
+                <a href="{% url 'home' %}" class="flex shrink-0 items-center gap-2.5">
+                    <span class="grid h-8 w-8 place-items-center rounded-lg bg-brand-600 text-sm font-bold text-white">DB</span>
+                    <span class="text-base font-semibold tracking-tight text-slate-900">Django Blog</span>
+                </a>
+
+                <!-- DESKTOP LINKS -->
+                <div class="hidden min-w-0 items-center gap-0.5 lg:flex">
+                    <a href="{% url 'home' %}"
+                       class="nav-link{% if request.path == '/' %} nav-link-active{% endif %}">Home</a>
 
                     <!-- DYNAMIC CATEGORIES INJECTED GLOBALLY (blogs/context_processors.py) -->
                     {% for category in categories %}
-                        <li class="nav-item">
-                            <a class="nav-link{% if category.id == active_category_id %} active fw-semibold{% endif %}"
-                               href="{% url 'post_by_category' category.id %}">{{ category.category_name }}</a>
-                        </li>
+                        <a href="{% url 'post_by_category' category.id %}"
+                           class="nav-link{% if category.id == active_category_id %} nav-link-active{% endif %}">{{ category.category_name }}</a>
                     {% endfor %}
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'about' %}">About Us</a>
-                    </li>
-                </ul>
+                    <a href="{% url 'about' %}" class="nav-link">About</a>
+                </div>
 
-                <!-- AUTH BUTTONS -->
-                <div class="d-flex flex-column flex-lg-row gap-2 pt-2 pt-lg-0">
-                    <a href="#" class="btn btn-outline-light btn-sm px-3">Login</a>
-                    <a href="#" class="btn btn-primary btn-sm px-3">Register</a>
+                <!-- DESKTOP SEARCH -->
+                <div class="hidden w-72 shrink-0 lg:block">
+                    {% include 'blog/includes/search_form.html' with field_id="search-desktop" %}
+                </div>
+
+                <!-- MOBILE HAMBURGER -->
+                <label for="nav-toggle"
+                       class="grid h-10 w-10 cursor-pointer place-items-center rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 lg:hidden">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+                         stroke-linecap="round" aria-hidden="true">
+                        <path d="M4 7h16M4 12h16M4 17h16" />
+                    </svg>
+                    <span class="sr-only">Menu</span>
+                </label>
+            </div>
+
+            <!-- MOBILE PANEL: shown only below lg, and only while the toggle is checked -->
+            <div class="hidden border-t border-slate-200 py-4 max-lg:peer-checked:block">
+                <div class="mb-4">
+                    {% include 'blog/includes/search_form.html' with field_id="search-mobile" %}
+                </div>
+
+                <div class="flex flex-col gap-0.5">
+                    <a href="{% url 'home' %}"
+                       class="nav-link{% if request.path == '/' %} nav-link-active{% endif %}">Home</a>
+
+                    {% for category in categories %}
+                        <a href="{% url 'post_by_category' category.id %}"
+                           class="nav-link{% if category.id == active_category_id %} nav-link-active{% endif %}">{{ category.category_name }}</a>
+                    {% endfor %}
+
+                    <a href="{% url 'about' %}" class="nav-link">About</a>
                 </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <!-- INJECTION ZONE FOR CHILD TEMPLATES -->
-    <main class="flex-grow-1 py-4 py-lg-5">
-        <div class="container">
+    <!-- ================= INJECTION ZONE FOR CHILD TEMPLATES ================= -->
+    <main class="flex-1">
+        <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
             {% block content %}{% endblock %}
         </div>
     </main>
 
-    <!-- GLOBAL FOOTER -->
-    <footer class="bg-dark text-white-50 mt-auto py-4">
-        <div class="container">
-            <div class="row gy-3 align-items-center">
-                <div class="col-md-6 text-center text-md-start">
-                    <span class="fw-semibold text-white">Django Blog</span>
-                    <span class="d-block small">Built while learning Django.</span>
+    <!-- ================= FOOTER ================= -->
+    <footer class="mt-auto border-t border-slate-200 bg-white">
+        <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+            <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+
+                <div>
+                    <p class="font-semibold text-slate-900">Django Blog</p>
+                    <p class="mt-1 text-sm text-slate-500">Built while learning Django.</p>
                 </div>
 
-                <!-- SOCIAL LINKS -->
+                <!-- SOCIAL LINKS (global via context processor) -->
                 {% if social_links %}
-                <div class="col-12 col-md text-center">
-                    <div class="d-flex justify-content-center gap-3">
+                    <div class="flex items-center gap-2">
                         {% for link in social_links %}
                             <a href="{{ link.url }}"
                                target="_blank"
                                rel="noopener noreferrer"
-                               class="text-white-50 fs-5"
-                               title="{{ link.platform }}">
-                                <i class="bi {{ link.icon_class }}"></i>
+                               title="{{ link.platform }}"
+                               class="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700">
+                                <i class="bi {{ link.icon_class }}" aria-hidden="true"></i>
+                                <span class="sr-only">{{ link.platform }}</span>
                             </a>
                         {% endfor %}
                     </div>
-                </div>
                 {% endif %}
 
-                <div class="col-md-6 text-center text-md-end small">
-                    &copy; 2026 Django Blog Project
-                </div>
+                <p class="text-sm text-slate-400">&copy; 2026 Django Blog Project</p>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

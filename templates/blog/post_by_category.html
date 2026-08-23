@@ -5,34 +5,35 @@
 {% block content %}
 
 <!-- BREADCRUMB -->
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb small">
-    <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Home</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ category.category_name }}</li>
+<nav aria-label="Breadcrumb" class="mb-6">
+  <ol class="flex flex-wrap items-center gap-1.5 text-sm text-slate-400">
+    <li><a href="{% url 'home' %}" class="transition hover:text-brand-700">Home</a></li>
+    <li aria-hidden="true">/</li>
+    <li class="text-slate-600" aria-current="page">{{ category.category_name }}</li>
   </ol>
 </nav>
 
-<!-- CATEGORY HEADER -->
-<header class="mb-4 pb-3 border-bottom">
-  <p class="eyebrow text-uppercase small fw-semibold text-secondary mb-1">Category</p>
-  <div class="d-flex flex-wrap align-items-baseline justify-content-between gap-2">
-    <h1 class="h2 fw-bold mb-0">{{ category.category_name }}</h1>
-    <span class="text-muted small">
+<!-- ================= CATEGORY HEADER ================= -->
+<header class="mb-10 border-b border-slate-200 pb-8">
+  <p class="mb-2 text-xs font-semibold tracking-[0.18em] text-brand-600 uppercase">Category</p>
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <h1 class="text-3xl sm:text-4xl">Category: {{ category.category_name }}</h1>
+    <span class="text-sm text-slate-400">
       {{ posts|length }} published post{{ posts|length|pluralize }}
     </span>
   </div>
 </header>
 
-<!-- POST GRID -->
-<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+<!-- ================= POST GRID (matches home page) ================= -->
+<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
   {% for post in posts %}
-    <div class="col">{% include 'blog/includes/post_card.html' %}</div>
+    {% include 'blog/includes/post_card.html' %}
   {% empty %}
-    <div class="col-12">
-      <div class="alert alert-info mb-0">
-        No published posts found in this category yet.
-        <a href="{% url 'home' %}" class="alert-link">Back to home</a>.
-      </div>
+    <div class="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
+      <p class="text-slate-500">No published posts found in this category yet.</p>
+      <a href="{% url 'home' %}" class="btn btn-ghost mt-5">
+        <span aria-hidden="true">&larr;</span> Back to home
+      </a>
     </div>
   {% endfor %}
 </div>
