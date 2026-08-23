@@ -19,4 +19,4 @@ def home(request):
         "posts": published.filter(is_featured=False),
     }
 
-    return render(request, "blog/home.html", context)
+    return render(request, "pages/blog/page_home.html", context)

@@ -1,7 +1,7 @@
 {% comment %}
 Search bar markup only — there is no search backend yet.
 
-  {% include 'blog/includes/search_form.html' with field_id="search-desktop" %}
+  {% include 'components/blog/form_search.html' with field_id="search-desktop" %}
 
 TODO: Wire to backend search view.
   1. add a `search` view to blogs/views.py that filters on request.GET.get("keyword")
@@ -12,7 +12,7 @@ TODO: Wire to backend search view.
 Until then action="" is a deliberate no-op: submitting re-requests the current
 page with ?keyword=... and nothing breaks.
 {% endcomment %}
-<form action="" method="GET" role="search" class="flex items-center gap-2">
+<form action="{% url 'search' %}" method="GET" role="search" class="flex items-center gap-2">
   <div class="relative flex-1">
     <label for="{{ field_id }}" class="sr-only">Search posts</label>
 

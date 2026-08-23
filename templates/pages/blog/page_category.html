@@ -27,7 +27,7 @@
 <!-- ================= POST GRID (matches home page) ================= -->
 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
   {% for post in posts %}
-    {% include 'blog/includes/post_card.html' %}
+    {% include 'components/blog/card_post.html' %}
   {% empty %}
     <div class="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
       <p class="text-slate-500">No published posts found in this category yet.</p>

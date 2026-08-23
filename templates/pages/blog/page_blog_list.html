@@ -7,7 +7,7 @@
 <div class="mx-auto max-w-3xl">
   {# This route passes the post as `single_post`; alias it for the shared partial. #}
   {% with post=single_post %}
-    {% include 'blog/includes/post_article.html' %}
+    {% include 'components/blog/article_post.html' %}
   {% endwith %}
 </div>
 {% endblock %}

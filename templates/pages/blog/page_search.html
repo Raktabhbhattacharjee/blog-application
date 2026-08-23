@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Search Header -->
+  <div class="mb-8 border-b border-slate-200 pb-4">
+    <h1 class="text-2xl md:text-3xl font-bold text-slate-900">
+      Search Results for: <span class="text-brand-600 font-semibold">"{{ keyword }}"</span>
+    </h1>
+    <p class="text-sm text-slate-500 mt-1">
+      Found {{ count }} matching article(s)
+    </p>
+  </div>
+
+  <!-- Search Results Grid -->
+  {% if blogs %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for post in blogs %}
+        {% include 'components/blog/card_post.html' %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <!-- Empty State -->
+    <div class="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-6 text-center max-w-lg mx-auto my-12">
+      <h3 class="text-lg font-semibold mb-2">No articles found</h3>
+      <p class="text-sm text-amber-700">
+        We couldn't find any posts matching <strong>"{{ keyword }}"</strong>. Try searching for another keyword or category!
+      </p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

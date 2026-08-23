@@ -49,7 +49,7 @@
 
                 <!-- DESKTOP SEARCH -->
                 <div class="hidden w-72 shrink-0 lg:block">
-                    {% include 'blog/includes/search_form.html' with field_id="search-desktop" %}
+                    {% include 'components/blog/form_search.html' with field_id="search-desktop" %}
                 </div>
 
                 <!-- MOBILE HAMBURGER -->
@@ -66,7 +66,7 @@
             <!-- MOBILE PANEL: shown only below lg, and only while the toggle is checked -->
             <div class="hidden border-t border-slate-200 py-4 max-lg:peer-checked:block">
                 <div class="mb-4">
-                    {% include 'blog/includes/search_form.html' with field_id="search-mobile" %}
+                    {% include 'components/blog/form_search.html' with field_id="search-mobile" %}
                 </div>
 
                 <div class="flex flex-col gap-0.5">

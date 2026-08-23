@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Category, Blog, About, SocialLink
-
+from django.db.models import Q
 
 def home(request):
     """
@@ -19,7 +19,7 @@ def home(request):
         "posts": published.filter(is_featured=False),
     }
 
-    return render(request, "blog/home.html", context)
+    return render(request, "pages/blog/page_home.html", context)
 
 
 def post_by_category(request, category_id):
@@ -45,7 +45,7 @@ def post_by_category(request, category_id):
 
     return render(
         request,
-        "blog/post_by_category.html",
+        "pages/blog/page_category.html",
         context
     )
 
@@ -70,7 +70,7 @@ def post_detail(request, slug):
 
     return render(
         request,
-        "blog/post_detail.html",
+        "pages/blog/page_post_detail.html",
         context
     )
 
@@ -90,7 +90,7 @@ def blogs(request, slug):
         "single_post": single_post,
         "active_category_id": single_post.category_id,
     }
-    return render(request, "blog/blogs.html", context)
+    return render(request, "pages/blog/page_blog_list.html", context)
 
 
 def about(request):
@@ -105,4 +105,32 @@ def about(request):
         "social_links": social_links,
     }
 
-    return render(request, "about.html", context)
+    return render(request, "pages/about.html", context)
+
+
+# search functionality 
+def search(request):
+    # 1. Grab the search keyword from the GET query parameters (?keyword=...)
+    keyword = request.GET.get("keyword", "").strip()
+
+    blogs = Blog.objects.none()  # Start with an empty QuerySet
+
+    # 2. Pattern match using Q objects if a keyword was typed
+    if keyword:
+        blogs = Blog.objects.filter(
+            Q(title__icontains=keyword)
+            | Q(short_description__icontains=keyword)
+            | Q(blog_body__icontains=keyword)
+            | Q(category__category_name__icontains=keyword),
+            status="Published",
+        ).select_related("category", "author").distinct()
+
+    # 3. Package results and search term into context
+    context = {
+        "blogs": blogs,
+        "keyword": keyword,
+        "count": blogs.count(),
+    }
+
+    # 4. Render the template (matching your template folder 'blog/')
+    return render(request, "pages/blog/page_search.html", context)

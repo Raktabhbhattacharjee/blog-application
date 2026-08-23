@@ -33,7 +33,7 @@
 
   <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
     {% for post in featured_posts %}
-      {% include 'blog/includes/post_card.html' %}
+      {% include 'components/blog/card_post.html' %}
     {% endfor %}
   </div>
 </section>
@@ -47,7 +47,7 @@
 
   <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
     {% for post in posts %}
-      {% include 'blog/includes/post_card.html' %}
+      {% include 'components/blog/card_post.html' %}
     {% empty %}
       <p class="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center text-slate-500">
         No posts have been published yet.
