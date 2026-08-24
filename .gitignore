@@ -16,6 +16,7 @@ db.sqlite3
 # IDE & Documentation
 instructions.md
 auth-ui-visual-polish-instructions.md
+PROJECT_CONTEXT_PROMPT.md
 .claude/
 
 # OS
