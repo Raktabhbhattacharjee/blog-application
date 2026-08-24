@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-md mx-auto my-12 p-6 bg-white rounded-xl shadow-sm border border-slate-200">
+  <h2 class="text-2xl font-bold text-slate-900 mb-6 text-center">Log In</h2>
+
+  <form method="POST" class="space-y-4">
+    {% csrf_token %}
+
+    {% for field in form %}
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1" for="{{ field.id_for_label }}">
+          {{ field.label }}
+        </label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="text-xs text-red-600 mt-1">
+            {{ field.errors|striptags }}
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2 px-4 rounded-lg transition mt-4">
+      Log In
+    </button>
+  </form>
+
+  <p class="text-xs text-slate-500 text-center mt-4">
+    Don't have an account? <a href="{% url 'register' %}" class="text-brand-600 font-medium hover:underline">Register</a>
+  </p>
+</div>
+{% endblock %}
+

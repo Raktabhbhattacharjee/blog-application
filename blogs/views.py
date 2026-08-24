@@ -1,6 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Category, Blog, About, SocialLink
 from django.db.models import Q
+from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import redirect, render
+
 
 def home(request):
     """
@@ -10,7 +14,9 @@ def home(request):
     NOTE: the '/' route is currently wired to blog_main.views.home, so this view
     is not reachable through blog_main/urls.py.
     """
-    published = Blog.objects.filter(status="Published").select_related("category", "author")
+    published = Blog.objects.filter(status="Published").select_related(
+        "category", "author"
+    )
 
     context = {
         # SELECT * FROM blogs_blog WHERE is_featured = True AND status = 'Published';
@@ -30,10 +36,8 @@ def post_by_category(request, category_id):
     category = get_object_or_404(Category, id=category_id)
 
     # 2. SELECT * FROM blogs_blog WHERE status='Published' AND category_id=category_id;
-    posts = (
-        Blog.objects
-        .filter(status="Published", category=category)
-        .select_related("category", "author")
+    posts = Blog.objects.filter(status="Published", category=category).select_related(
+        "category", "author"
     )
 
     context = {
@@ -43,11 +47,7 @@ def post_by_category(request, category_id):
         "active_category_id": category.id,
     }
 
-    return render(
-        request,
-        "pages/blog/page_category.html",
-        context
-    )
+    return render(request, "pages/blog/page_category.html", context)
 
 
 def post_detail(request, slug):
@@ -68,11 +68,7 @@ def post_detail(request, slug):
         "post": post,
     }
 
-    return render(
-        request,
-        "pages/blog/page_post_detail.html",
-        context
-    )
+    return render(request, "pages/blog/page_post_detail.html", context)
 
 
 def blogs(request, slug):
@@ -108,7 +104,7 @@ def about(request):
     return render(request, "pages/about.html", context)
 
 
-# search functionality 
+# search functionality
 def search(request):
     # 1. Grab the search keyword from the GET query parameters (?keyword=...)
     keyword = request.GET.get("keyword", "").strip()
@@ -117,13 +113,17 @@ def search(request):
 
     # 2. Pattern match using Q objects if a keyword was typed
     if keyword:
-        blogs = Blog.objects.filter(
-            Q(title__icontains=keyword)
-            | Q(short_description__icontains=keyword)
-            | Q(blog_body__icontains=keyword)
-            | Q(category__category_name__icontains=keyword),
-            status="Published",
-        ).select_related("category", "author").distinct()
+        blogs = (
+            Blog.objects.filter(
+                Q(title__icontains=keyword)
+                | Q(short_description__icontains=keyword)
+                | Q(blog_body__icontains=keyword)
+                | Q(category__category_name__icontains=keyword),
+                status="Published",
+            )
+            .select_related("category", "author")
+            .distinct()
+        )
 
     # 3. Package results and search term into context
     context = {
@@ -134,3 +134,20 @@ def search(request):
 
     # 4. Render the template (matching your template folder 'blog/')
     return render(request, "pages/blog/page_search.html", context)
+
+
+def register(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get("username")
+            messages.success(
+                request, f"Account created for {username}! You can now log in."
+            )
+            return redirect("login")
+    else:
+        form = UserCreationForm()
+
+    context = {"form": form}
+    return render(request, "pages/blog/page_register.html", context)
