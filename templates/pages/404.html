@@ -1,18 +1,42 @@
 {% extends 'base.html' %}
 
-{% block title %}404 - Page Not Found{% endblock %}
+{% block title %}404 - Page Not Found | DevChronicle{% endblock %}
 
 {% block content %}
-<div class="mx-auto max-w-xl">
-  <div class="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
-    <p class="text-6xl font-bold tracking-tight text-brand-600 sm:text-7xl">404</p>
-    <h1 class="mt-4 text-2xl">Oops! Page not found</h1>
-    <p class="mx-auto mt-3 max-w-sm leading-relaxed text-slate-500">
-      The category, article, or page you are looking for doesn't exist or has been moved.
+<div class="relative mx-auto max-w-xl my-8 sm:my-12">
+  <!-- Subtle ambient decorative glow behind 404 card -->
+  <div class="absolute -top-10 -left-10 w-64 h-64 bg-brand-200/40 rounded-full blur-3xl -z-10 pointer-events-none" aria-hidden="true"></div>
+  <div class="absolute -bottom-10 -right-10 w-64 h-64 bg-indigo-200/30 rounded-full blur-3xl -z-10 pointer-events-none" aria-hidden="true"></div>
+
+  <div class="rounded-3xl border border-slate-200/80 bg-white p-8 sm:p-14 text-center shadow-xl">
+    <span class="inline-flex items-center gap-1.5 pill pill-brand mb-4">
+      <i class="bi bi-exclamation-triangle"></i>
+      <span>Error 404</span>
+    </span>
+
+    <p class="text-7xl font-extrabold tracking-tight bg-gradient-to-tr from-brand-700 via-brand-600 to-indigo-500 bg-clip-text text-transparent sm:text-8xl">
+      404
     </p>
-    <a href="{% url 'home' %}" class="btn btn-primary mt-8">
-      <span aria-hidden="true">&larr;</span> Back to home
-    </a>
+
+    <h1 class="mt-4 text-2xl sm:text-3xl font-bold text-slate-900">
+      Oops! Page not found
+    </h1>
+
+    <p class="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-slate-500">
+      The article, category, or page you were looking for doesn't exist or has moved.
+    </p>
+
+    <div class="mt-8 border-t border-slate-100 pt-6">
+      <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Try searching for an article</p>
+      {% include 'components/blog/form_search.html' with field_id="search-404" %}
+    </div>
+
+    <div class="mt-8 flex justify-center">
+      <a href="{% url 'home' %}" class="btn btn-ghost">
+        <span aria-hidden="true">&larr;</span> Return to Homepage
+      </a>
+    </div>
   </div>
 </div>
 {% endblock %}
+

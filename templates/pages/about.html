@@ -1,59 +1,95 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {% if about %}{{ about.title }}{% else %}About Us{% endif %}
+    {% if about %}{{ about.title }}{% else %}About the Author{% endif %} | DevChronicle
 {% endblock %}
 
 {% block content %}
 <div class="mx-auto max-w-3xl">
 
-    <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
+    <!-- BREADCRUMB -->
+    <nav aria-label="Breadcrumb" class="mb-6">
+      <ol class="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-400">
+        <li>
+          <a href="{% url 'home' %}" class="flex items-center gap-1 transition hover:text-brand-600">
+            <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+            <span>Home</span>
+          </a>
+        </li>
+        <li aria-hidden="true" class="text-slate-300">/</li>
+        <li class="text-slate-600 font-semibold" aria-current="page">About</li>
+      </ol>
+    </nav>
 
-        <header class="text-center">
-            <!-- Profile / About Image -->
-            {% if about and about.profile_image %}
-                <img src="{{ about.profile_image.url }}"
-                     alt="{{ about.title }}"
-                     class="mx-auto mb-6 h-40 w-40 rounded-full bg-slate-100 object-cover ring-4 ring-brand-50">
-            {% endif %}
+    <article class="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-xs">
 
-            <!-- Title -->
-            <h1 class="text-3xl sm:text-4xl">
-                {% if about %}{{ about.title }}{% else %}About Us{% endif %}
-            </h1>
-        </header>
-
-        <!-- Content -->
-        <div class="mt-8">
-            {% if about %}
-                <div class="article-prose">
-                    {{ about.content|linebreaks }}
-                </div>
-            {% else %}
-                <p class="rounded-xl border border-dashed border-slate-300 px-6 py-10 text-center text-slate-500">
-                    No about details added yet. Please add content from the admin panel.
-                </p>
-            {% endif %}
+        <!-- Top decorative banner -->
+        <div class="h-32 bg-gradient-to-r from-slate-900 via-brand-900 to-indigo-900 relative">
+            <div class="absolute inset-0 bg-brand-500/10 backdrop-blur-2xs"></div>
         </div>
 
-        <!-- Social Links Section -->
-        <div class="mt-10 border-t border-slate-100 pt-8 text-center">
-            <h2 class="text-xs font-semibold tracking-[0.18em] text-slate-400 uppercase">
-                Connect With Me
-            </h2>
+        <div class="relative px-6 pb-8 sm:px-10 sm:pb-12">
+            <!-- Profile / Avatar -->
+            <div class="-mt-16 mb-6 flex justify-center">
+                {% if about and about.profile_image %}
+                    <img src="{{ about.profile_image.url }}"
+                         alt="{{ about.title }}"
+                         class="h-32 w-32 rounded-full border-4 border-white bg-slate-100 object-cover shadow-lg ring-2 ring-brand-500/20">
+                {% else %}
+                    <div class="grid h-32 w-32 place-items-center rounded-full border-4 border-white bg-gradient-to-tr from-brand-700 via-brand-600 to-brand-500 text-3xl font-bold text-white shadow-lg">
+                        DC
+                    </div>
+                {% endif %}
+            </div>
 
-            <div class="mt-5 flex flex-wrap justify-center gap-3">
-                {% for link in social_links %}
-                    <a href="{{ link.url }}"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       class="btn btn-ghost hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700">
-                        <i class="bi {{ link.icon_class }}" aria-hidden="true"></i>
-                        <span>{{ link.platform }}</span>
-                    </a>
-                {% empty %}
-                    <p class="text-sm text-slate-400">No social links added yet.</p>
-                {% endfor %}
+            <!-- Title & Subtitle -->
+            <header class="text-center mb-8">
+                <div class="inline-flex items-center gap-1.5 pill pill-brand mb-2">
+                  <i class="bi bi-person-badge"></i>
+                  <span>Author &amp; Creator</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+                    {% if about %}{{ about.title }}{% else %}About DevChronicle{% endif %}
+                </h1>
+                <p class="mt-2 text-sm text-slate-500 max-w-md mx-auto">
+                    Writing about software engineering, distributed systems, architecture, and technology insights.
+                </p>
+            </header>
+
+            <!-- Bio Content -->
+            <div class="mt-6 border-t border-slate-100 pt-6">
+                {% if about %}
+                    <div class="article-prose">
+                        {{ about.content|linebreaks }}
+                    </div>
+                {% else %}
+                    <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 p-8 text-center text-slate-500">
+                        <i class="bi bi-pencil-square text-2xl text-slate-400 mb-2 block"></i>
+                        <p class="text-sm font-medium">No bio information configured yet.</p>
+                        <p class="text-xs text-slate-400 mt-1">You can add your bio details and profile picture in the Django admin panel.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Social Links Section -->
+            <div class="mt-10 border-t border-slate-100 pt-8 text-center">
+                <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase">
+                    Connect &amp; Follow
+                </h2>
+
+                <div class="mt-4 flex flex-wrap justify-center gap-3">
+                    {% for link in social_links %}
+                        <a href="{{ link.url }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="btn btn-ghost hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 shadow-2xs hover:scale-105">
+                            <i class="bi {{ link.icon_class }} text-base" aria-hidden="true"></i>
+                            <span>{{ link.platform }}</span>
+                        </a>
+                    {% empty %}
+                        <p class="text-xs text-slate-400">Social channels will appear here once configured.</p>
+                    {% endfor %}
+                </div>
             </div>
         </div>
 
@@ -61,3 +97,4 @@
 
 </div>
 {% endblock %}
+

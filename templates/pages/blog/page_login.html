@@ -1,44 +1,79 @@
 {% extends 'base.html' %}
 
+{% block title %}Log In | DevChronicle{% endblock %}
+
 {% block content %}
-<div class="max-w-md mx-auto my-12 p-6 bg-white rounded-xl shadow-sm border border-slate-200">
-  <h2 class="text-2xl font-bold text-slate-900 mb-6 text-center">Log In</h2>
+<div class="relative max-w-md mx-auto my-8 sm:my-12">
+  <!-- Subtle ambient decorative glow behind the card -->
+  <div class="absolute -top-6 -left-6 w-48 h-48 bg-brand-200/40 rounded-full blur-3xl -z-10 pointer-events-none" aria-hidden="true"></div>
+  <div class="absolute -bottom-6 -right-6 w-48 h-48 bg-brand-100/50 rounded-full blur-3xl -z-10 pointer-events-none" aria-hidden="true"></div>
 
-  <form method="POST" class="space-y-5">
-    {% csrf_token %}
+  <!-- Elevated Card Container -->
+  <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/70 border border-slate-200/80 overflow-hidden">
+    <!-- Top brand decorative accent bar -->
+    <div class="h-1.5 w-full bg-gradient-to-r from-brand-500 via-brand-600 to-brand-700"></div>
 
-    {% for field in form %}
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-2" for="{{ field.id_for_label }}">
-          {{ field.label }}
-        </label>
-        {% if field.field.widget.input_type == 'password' %}
-          <input type="password" name="{{ field.name }}" id="{{ field.id_for_label }}"
-                 class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm placeholder-slate-400 shadow-sm transition focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-                 {% if field.value %}value="{{ field.value }}"{% endif %}
-                 required>
-        {% else %}
-          <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}"
-                 class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm placeholder-slate-400 shadow-sm transition focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-                 {% if field.value %}value="{{ field.value }}"{% endif %}
-                 required>
-        {% endif %}
-        {% if field.errors %}
-          <div class="text-xs text-red-600 mt-1.5">
-            {{ field.errors|striptags }}
+    <div class="p-6 sm:p-8">
+      <!-- Heading & Brand Icon Treatment -->
+      <div class="text-center mb-7">
+        <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 ring-1 ring-brand-200/60 shadow-xs mb-3.5">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+        </div>
+        <p class="text-xs font-semibold uppercase tracking-wider text-brand-600">Welcome Back</p>
+        <h1 class="text-2xl font-bold text-slate-900 mt-1">Log in to your account</h1>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">Enter your credentials below to continue</p>
+      </div>
+
+      <form method="POST" class="space-y-4">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="rounded-lg bg-red-50 p-3 text-xs text-red-700 border border-red-200">
+            {{ form.non_field_errors }}
           </div>
         {% endif %}
+
+        {% for field in form %}
+          <div>
+            <label class="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5" for="{{ field.id_for_label }}">
+              {{ field.label }}
+            </label>
+            {% if field.field.widget.input_type == 'password' %}
+              <input type="password" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                     class="w-full rounded-lg border border-slate-300 bg-slate-50/40 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-xs transition duration-150 ease-in-out focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                     {% if field.value %}value="{{ field.value }}"{% endif %}
+                     required>
+            {% else %}
+              <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                     class="w-full rounded-lg border border-slate-300 bg-slate-50/40 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-xs transition duration-150 ease-in-out focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                     {% if field.value %}value="{{ field.value }}"{% endif %}
+                     required>
+            {% endif %}
+            {% if field.errors %}
+              <div class="text-xs font-medium text-red-600 mt-1.5 flex items-start gap-1">
+                <svg class="h-4 w-4 shrink-0 text-red-500 mt-0.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                </svg>
+                <span>{{ field.errors|striptags }}</span>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+
+        <button type="submit" class="w-full cursor-pointer rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-brand-500/25 transition duration-150 ease-in-out hover:bg-brand-700 hover:shadow-lg hover:shadow-brand-500/35 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 active:scale-[0.99] mt-2">
+          Log In
+        </button>
+      </form>
+
+      <div class="mt-6 pt-5 border-t border-slate-100 text-center">
+        <p class="text-xs text-slate-500">
+          Don't have an account? <a href="{% url 'register' %}" class="text-brand-600 font-semibold hover:text-brand-700 hover:underline">Register now</a>
+        </p>
       </div>
-    {% endfor %}
-
-    <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2 px-4 rounded-lg transition mt-4">
-      Log In
-    </button>
-  </form>
-
-  <p class="text-xs text-slate-500 text-center mt-4">
-    Don't have an account? <a href="{% url 'register' %}" class="text-brand-600 font-medium hover:underline">Register</a>
-  </p>
+    </div>
+  </div>
 </div>
 {% endblock %}
 

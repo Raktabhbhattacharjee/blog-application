@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ single_post.title }} | Django Blog{% endblock %}
+{% block title %}{{ single_post.title }} | DevChronicle{% endblock %}
 {% block meta_description %}{{ single_post.short_description|truncatewords:25 }}{% endblock %}
 
 {% block content %}
-<div class="mx-auto max-w-3xl">
+<div class="mx-auto max-w-4xl">
   {# This route passes the post as `single_post`; alias it for the shared partial. #}
   {% with post=single_post %}
     {% include 'components/blog/article_post.html' %}
   {% endwith %}
 </div>
 {% endblock %}
+

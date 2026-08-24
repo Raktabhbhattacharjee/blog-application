@@ -1,70 +1,94 @@
 {% comment %}
 Shared single-post article markup. Expects a `post` (blogs.models.Blog) in context.
-Used by blog/blogs.html (aliases `single_post` -> `post`) and blog/post_detail.html,
-so both detail routes stay identical instead of drifting apart.
 {% endcomment %}
 
 <!-- BREADCRUMB -->
 <nav aria-label="Breadcrumb" class="mb-6">
-  <ol class="flex flex-wrap items-center gap-1.5 text-sm text-slate-400">
-    <li><a href="{% url 'home' %}" class="transition hover:text-brand-700">Home</a></li>
-    <li aria-hidden="true">/</li>
+  <ol class="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-400">
     <li>
-      <a href="{% url 'post_by_category' post.category.id %}" class="transition hover:text-brand-700">
+      <a href="{% url 'home' %}" class="flex items-center gap-1 transition hover:text-brand-600">
+        <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+        <span>Home</span>
+      </a>
+    </li>
+    <li aria-hidden="true" class="text-slate-300">/</li>
+    <li>
+      <a href="{% url 'post_by_category' post.category.id %}" class="transition hover:text-brand-600">
         {{ post.category.category_name }}
       </a>
     </li>
-    <li aria-hidden="true">/</li>
-    <li class="text-slate-600" aria-current="page">{{ post.title|truncatewords:5 }}</li>
+    <li aria-hidden="true" class="text-slate-300">/</li>
+    <li class="text-slate-600 truncate max-w-[200px] sm:max-w-xs" aria-current="page">{{ post.title }}</li>
   </ol>
 </nav>
 
-<article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<article class="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm">
 
-  <!-- FEATURED IMAGE (model field is `feature_image`) -->
+  <!-- ARTICLE HEADER -->
+  <header class="p-6 sm:p-10 sm:pb-8">
+    <div class="mb-4 flex flex-wrap items-center gap-2.5">
+      <a href="{% url 'post_by_category' post.category.id %}" class="pill pill-brand">
+        {{ post.category.category_name }}
+      </a>
+      <span class="text-xs text-slate-400">&bull;</span>
+      <time class="text-xs font-medium text-slate-400" datetime="{{ post.created_at|date:'Y-m-d' }}">
+        Published on {{ post.created_at|date:"F j, Y" }}
+      </time>
+    </div>
+
+    <h1 class="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
+      {{ post.title }}
+    </h1>
+
+    <!-- Author Meta Bar -->
+    <div class="mt-6 flex items-center justify-between border-t border-slate-100 pt-6">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-full bg-brand-100 text-sm font-bold text-brand-700 shadow-xs">
+          {{ post.author.username|slice:":1"|upper|default:"A" }}
+        </span>
+        <div>
+          <p class="text-sm font-semibold text-slate-900">{{ post.author.username|default:"Author" }}</p>
+          <p class="text-xs text-slate-400">Staff Writer &amp; Contributor</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- FEATURED HERO IMAGE -->
   {% if post.feature_image %}
-    <img src="{{ post.feature_image.url }}"
-         class="aspect-[21/9] w-full bg-slate-100 object-cover"
-         alt="{{ post.title }}">
+    <div class="px-6 sm:px-10 pb-4">
+      <div class="overflow-hidden rounded-2xl shadow-sm border border-slate-100">
+        <img src="{{ post.feature_image.url }}"
+             class="aspect-[21/10] w-full object-cover"
+             alt="{{ post.title }}">
+      </div>
+    </div>
   {% endif %}
 
-  <div class="p-6 sm:p-10">
+  <div class="p-6 sm:p-10 pt-4">
 
-    <!-- ARTICLE HEADER -->
-    <header class="mb-8 border-b border-slate-100 pb-8">
-      <div class="mb-4 flex flex-wrap items-center gap-2">
-        <a href="{% url 'post_by_category' post.category.id %}" class="pill pill-brand transition hover:bg-brand-100">
-          {{ post.category.category_name }}
-        </a>
-        <time class="text-sm text-slate-400">{{ post.created_at|date:"F j, Y" }}</time>
+    <!-- LEAD / SHORT DESCRIPTION INTRO -->
+    {% if post.short_description %}
+      <div class="mb-8 rounded-2xl border-l-4 border-brand-500 bg-brand-50/40 p-5 sm:p-6 text-base sm:text-lg leading-relaxed font-medium text-slate-700">
+        {{ post.short_description }}
       </div>
+    {% endif %}
 
-      <h1 class="text-3xl leading-tight text-balance sm:text-4xl">{{ post.title }}</h1>
-
-      <p class="mt-4 text-sm text-slate-500">
-        By <span class="font-medium text-slate-900">{{ post.author.username|default:"Unknown" }}</span>
-      </p>
-    </header>
-
-    <!-- SHORT DESCRIPTION (LEAD INTRO) -->
-    <p class="mb-8 border-l-4 border-brand-500 pl-5 text-lg leading-relaxed font-medium text-slate-600">
-      {{ post.short_description }}
-    </p>
-
-    <!-- FULL ARTICLE BODY -->
+    <!-- FULL ARTICLE PROSE CONTENT -->
     <div class="article-prose">
       {{ post.blog_body|linebreaks }}
     </div>
 
-    <!-- FOOTER NAVIGATION -->
-    <footer class="mt-10 flex flex-wrap gap-3 border-t border-slate-100 pt-8">
+    <!-- FOOTER NAVIGATION & ACTIONS -->
+    <footer class="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-8">
       <a href="{% url 'home' %}" class="btn btn-ghost">
-        <span aria-hidden="true">&larr;</span> Back to home
+        <span aria-hidden="true">&larr;</span> Back to all articles
       </a>
       <a href="{% url 'post_by_category' post.category.id %}" class="btn btn-primary">
-        More in {{ post.category.category_name }}
+        More in {{ post.category.category_name }} &rarr;
       </a>
     </footer>
 
   </div>
 </article>
+
