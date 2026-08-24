@@ -31,3 +31,6 @@ Thumbs.db
 
 # Local scripts
 set-claude-env.ps1
+
+# Local credentials
+CREDENTIALS.md
