@@ -20,6 +20,7 @@ urlpatterns = [
     path('category/', include('blogs.urls')),
 
     # Single Post URL — UPDATED NAME TO 'post_detail'
+     path("dashboard/", include("dashboard.urls")),
     path('<slug:slug>/', BlogsView.blogs, name='post_detail'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
