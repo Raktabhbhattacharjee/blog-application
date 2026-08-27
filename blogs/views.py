@@ -137,6 +137,9 @@ def search(request):
 
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect("dashboard" if (request.user.is_staff or request.user.groups.filter(name="Authors").exists()) else "home")
+
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -151,3 +154,4 @@ def register(request):
 
     context = {"form": form}
     return render(request, "pages/blog/page_register.html", context)
+

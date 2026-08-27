@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Categories Management | DevChronicle{% endblock %}
+
+{% block content %}
+<div class="flex flex-col gap-8 lg:flex-row">
+
+  <!-- DASHBOARD SIDEBAR NAVIGATION -->
+  {% include 'components/dashboard/nav_dashboard.html' with active_tab="categories" %}
+
+  <!-- MAIN CATEGORIES CONTENT -->
+  <main class="flex-1 min-w-0 space-y-6">
+
+    <!-- TOP HEADER & ACTIONS -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs">
+      <div>
+        <div class="inline-flex items-center gap-1.5 pill pill-brand mb-2">
+          <i class="bi bi-tags"></i>
+          <span>Taxonomy</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+          All Categories
+        </h1>
+        <p class="mt-1 text-sm text-slate-500">
+          Organize, add, and manage topic categories for your blog publications.
+        </p>
+      </div>
+
+      <!-- Add Category CTA -->
+      <div class="flex items-center gap-2">
+        <a href="{% url 'add_category' %}" class="btn btn-primary shadow-sm hover:shadow-md text-xs sm:text-sm">
+          <i class="bi bi-plus-lg text-sm"></i>
+          <span>Add New Category</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- CATEGORIES TABLE CARD -->
+    <section class="rounded-2xl border border-slate-200/80 bg-white shadow-xs overflow-hidden">
+      
+      <!-- Table Header -->
+      <div class="flex items-center justify-between border-b border-slate-100 p-5 sm:px-6">
+        <div class="flex items-center gap-2.5">
+          <span class="grid h-8 w-8 place-items-center rounded-xl bg-slate-100 text-slate-700 text-sm">
+            <i class="bi bi-folder2-open"></i>
+          </span>
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Registered Categories</h2>
+            <p class="text-xs text-slate-400">Total active categories across the platform</p>
+          </div>
+        </div>
+
+        <span class="inline-flex items-center rounded-lg bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700 ring-1 ring-brand-200/60">
+          {{ categories|length }} Total
+        </span>
+      </div>
+
+      <!-- Categories Table -->
+      {% if categories %}
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-600 divide-y divide-slate-100">
+            <thead class="bg-slate-50/75 text-xs font-bold uppercase tracking-wider text-slate-500">
+              <tr>
+                <th scope="col" class="py-3.5 pl-6 pr-3 w-12 text-center">#</th>
+                <th scope="col" class="px-3 py-3.5">Category Name</th>
+                <th scope="col" class="px-3 py-3.5">Created Date</th>
+                <th scope="col" class="px-3 py-3.5">Last Updated</th>
+                <th scope="col" class="py-3.5 pr-6 pl-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 bg-white">
+              {% for category in categories %}
+                <tr class="transition hover:bg-slate-50/60 group">
+                  
+                  <!-- Index -->
+                  <td class="py-4 pl-6 pr-3 text-center text-xs font-bold text-slate-400">
+                    {{ forloop.counter }}
+                  </td>
+
+                  <!-- Category Name -->
+                  <td class="px-3 py-4 font-medium text-slate-900">
+                    <div class="flex items-center gap-2.5">
+                      <span class="grid h-8 w-8 place-items-center rounded-lg bg-indigo-50 text-indigo-600 text-xs">
+                        <i class="bi bi-tag-fill"></i>
+                      </span>
+                      <a href="{% url 'post_by_category' category.id %}" class="font-bold text-slate-900 hover:text-brand-600 transition">
+                        {{ category.category_name }}
+                      </a>
+                    </div>
+                  </td>
+
+                  <!-- Created At -->
+                  <td class="px-3 py-4 whitespace-nowrap text-xs text-slate-500">
+                    <time datetime="{{ category.created_at|date:'Y-m-d' }}">{{ category.created_at|date:"M d, Y" }}</time>
+                  </td>
+
+                  <!-- Updated At -->
+                  <td class="px-3 py-4 whitespace-nowrap text-xs text-slate-500">
+                    <time datetime="{{ category.updated_at|date:'Y-m-d' }}">{{ category.updated_at|date:"M d, Y" }}</time>
+                  </td>
+
+                  <!-- Actions -->
+                  <td class="py-4 pr-6 pl-3 whitespace-nowrap text-right text-xs font-medium">
+                    <div class="inline-flex items-center gap-1.5">
+                      <!-- Edit Action -->
+                      <button type="button"
+                              title="Edit Category"
+                              class="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 shadow-2xs">
+                        <i class="bi bi-pencil-square text-sm"></i>
+                        <span class="sr-only">Edit</span>
+                      </button>
+
+                      <!-- Delete Action -->
+                      <button type="button"
+                              title="Delete Category"
+                              class="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600 shadow-2xs">
+                        <i class="bi bi-trash3 text-sm"></i>
+                        <span class="sr-only">Delete</span>
+                      </button>
+                    </div>
+                  </td>
+
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <!-- Empty State -->
+        <div class="p-12 text-center">
+          <div class="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-brand-50 text-brand-600 ring-1 ring-brand-200/60 shadow-xs">
+            <i class="bi bi-folder-plus text-2xl"></i>
+          </div>
+          <h3 class="text-base font-bold text-slate-900">No categories found</h3>
+          <p class="mt-1 text-sm text-slate-500 max-w-sm mx-auto">
+            You haven't created any topic categories yet. Categories help organize your articles.
+          </p>
+          <a href="{% url 'add_category' %}" class="btn btn-primary mt-6 inline-flex shadow-sm">
+            <i class="bi bi-plus-lg text-sm"></i>
+            <span>Add Your First Category</span>
+          </a>
+        </div>
+      {% endif %}
+
+    </section>
+
+  </main>
+
+</div>
+{% endblock %}
