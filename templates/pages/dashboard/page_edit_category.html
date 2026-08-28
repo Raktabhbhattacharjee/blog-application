@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Category | DevChronicle{% endblock %}
+
+{% block content %}
+<div class="flex flex-col gap-8 lg:flex-row">
+
+  <!-- DASHBOARD SIDEBAR NAVIGATION -->
+  {% include 'components/dashboard/nav_dashboard.html' with active_tab="categories" %}
+
+  <!-- MAIN EDIT CATEGORY FORM CONTENT -->
+  <main class="flex-1 min-w-0 space-y-6">
+
+    <!-- TOP HEADER -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs">
+      <div>
+        <div class="inline-flex items-center gap-1.5 pill pill-brand mb-2">
+          <i class="bi bi-pencil-square"></i>
+          <span>Edit Taxonomy</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+          Edit Category
+        </h1>
+        <p class="mt-1 text-sm text-slate-500">
+          Update the name and classification for <strong class="text-slate-700 font-semibold">{{ category.category_name }}</strong>.
+        </p>
+      </div>
+
+      <!-- Back Link -->
+      <div>
+        <a href="{% url 'categories' %}" class="btn btn-ghost text-xs sm:text-sm">
+          <i class="bi bi-arrow-left text-sm"></i>
+          <span>Back to Categories</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- FORM CARD -->
+    <section class="max-w-2xl rounded-2xl border border-slate-200/80 bg-white shadow-xs overflow-hidden">
+      <div class="h-1.5 w-full bg-gradient-to-r from-brand-600 via-indigo-600 to-sky-500"></div>
+
+      <div class="p-6 sm:p-8">
+        <form method="POST" action="{% url 'edit_category' category.id %}" class="space-y-6">
+          {% csrf_token %}
+
+          <!-- Field: Category Name -->
+          <div>
+            <label for="{{ form.category_name.id_for_label }}" class="block text-sm font-bold text-slate-700 mb-2">
+              Category Name <span class="text-red-500">*</span>
+            </label>
+            {{ form.category_name }}
+            
+            {% if form.category_name.errors %}
+              <div class="mt-2 text-xs font-semibold text-red-600 space-y-1">
+                {% for error in form.category_name.errors %}
+                  <p class="flex items-center gap-1">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <span>{{ error }}</span>
+                  </p>
+                {% endfor %}
+              </div>
+            {% else %}
+              <p class="mt-2 text-xs text-slate-400">
+                Updating this category name will automatically reflect across all published articles in this category.
+              </p>
+            {% endif %}
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex items-center gap-3 pt-4 border-t border-slate-100">
+            <button type="submit" class="btn btn-primary shadow-sm hover:shadow-md">
+              <i class="bi bi-check-lg text-base"></i>
+              <span>Update Category</span>
+            </button>
+            <a href="{% url 'categories' %}" class="btn btn-ghost">
+              Cancel
+            </a>
+          </div>
+
+        </form>
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+{% endblock %}

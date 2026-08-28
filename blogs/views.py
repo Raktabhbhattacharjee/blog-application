@@ -1,10 +1,10 @@
-from django.shortcuts import render, get_object_or_404
-from .models import Category, Blog, About, SocialLink
-from django.db.models import Q
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import redirect, render
+from django.db.models import Q
 
+from .models import Category, Blog, About, SocialLink
+from .forms import CategoryForm
 
 def home(request):
     """
@@ -138,7 +138,14 @@ def search(request):
 
 def register(request):
     if request.user.is_authenticated:
-        return redirect("dashboard" if (request.user.is_staff or request.user.groups.filter(name="Authors").exists()) else "home")
+        return redirect(
+            "dashboard"
+            if (
+                request.user.is_staff
+                or request.user.groups.filter(name="Authors").exists()
+            )
+            else "home"
+        )
 
     if request.method == "POST":
         form = UserCreationForm(request.POST)
@@ -154,4 +161,3 @@ def register(request):
 
     context = {"form": form}
     return render(request, "pages/blog/page_register.html", context)
-

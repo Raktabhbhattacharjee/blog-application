@@ -44,8 +44,8 @@ Expects: active_tab (string), user (auth.User)
       </a>
 
       <!-- Write New Post -->
-      <a href="#new-post"
-         class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+      <a href="{% url 'add_post' %}"
+         class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition {% if active_tab == 'add_post' %}bg-brand-50 text-brand-700 font-semibold ring-1 ring-brand-200/60 shadow-2xs{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">
         <i class="bi bi-pencil-square text-base"></i>
         <span>Write New Post</span>
       </a>

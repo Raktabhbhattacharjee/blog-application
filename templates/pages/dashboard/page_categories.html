@@ -103,20 +103,21 @@
                   <td class="py-4 pr-6 pl-3 whitespace-nowrap text-right text-xs font-medium">
                     <div class="inline-flex items-center gap-1.5">
                       <!-- Edit Action -->
-                      <button type="button"
-                              title="Edit Category"
-                              class="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 shadow-2xs">
+                      <a href="{% url 'edit_category' category.id %}"
+                         title="Edit Category"
+                         class="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 shadow-2xs">
                         <i class="bi bi-pencil-square text-sm"></i>
                         <span class="sr-only">Edit</span>
-                      </button>
+                      </a>
 
                       <!-- Delete Action -->
-                      <button type="button"
-                              title="Delete Category"
-                              class="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600 shadow-2xs">
+                      <a href="{% url 'delete_category' category.id %}"
+                         onclick="return confirm('Are you sure you want to delete \'{{ category.category_name|escapejs }}\'? This will also affect articles filed under it.');"
+                         title="Delete Category"
+                         class="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600 shadow-2xs">
                         <i class="bi bi-trash3 text-sm"></i>
                         <span class="sr-only">Delete</span>
-                      </button>
+                      </a>
                     </div>
                   </td>
 
