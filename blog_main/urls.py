@@ -19,8 +19,12 @@ urlpatterns = [
     # Category URLs
     path('category/', include('blogs.urls')),
 
-    # Single Post URL — UPDATED NAME TO 'post_detail'
-     path("dashboard/", include("dashboard.urls")),
-    path('<slug:slug>/', BlogsView.blogs, name='post_detail'),
+    # Dashboard URLs
+    path("dashboard/", include("dashboard.urls")),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # Like / Reaction URL
+    path("post/<int:pk>/like/", BlogsView.toggle_like, name="toggle_like"),
+
+    # Single Post Detail URL
+    path('<slug:slug>/', BlogsView.blogs, name='post_detail'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

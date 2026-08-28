@@ -15,13 +15,11 @@ def dashboard(request):
     Renders the Author Dashboard.
     Requires login. Fetches the logged-in author's posts.
     """
-    user_posts = Blog.objects.filter(author=request.user).select_related(
-        "category", "author"
-    )
-    if not user_posts.exists() and not request.user.is_superuser:
+    if request.user.is_staff or request.user.is_superuser:
         posts = Blog.objects.all().select_related("category", "author")
     else:
-        posts = user_posts
+        posts = Blog.objects.filter(author=request.user).select_related("category", "author")
+
 
     context = {
         "posts": posts,

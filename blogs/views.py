@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.db.models import Q
+from django.db.models import Q, Count
 
-from .models import Category, Blog, About, SocialLink
-from .forms import CategoryForm
+from .models import Category, Blog, About, SocialLink, Comment
+from .forms import CategoryForm, CommentForm
+
 
 def home(request):
     """
@@ -30,63 +32,98 @@ def home(request):
 
 def post_by_category(request, category_id):
     """
-    Renders all published posts under a specific category.
+    Renders all published posts under a specific category with like and comment counts.
     """
-    # 1. Fetch category object or immediately raise Http404 (renders 404.html)
     category = get_object_or_404(Category, id=category_id)
-
-    # 2. SELECT * FROM blogs_blog WHERE status='Published' AND category_id=category_id;
-    posts = Blog.objects.filter(status="Published", category=category).select_related(
-        "category", "author"
+    posts = (
+        Blog.objects.filter(status="Published", category=category)
+        .select_related("category", "author")
+        .annotate(
+            total_likes=Count("likes", distinct=True),
+            total_comments=Count("comments", distinct=True),
+        )
     )
 
     context = {
         "category": category,
         "posts": posts,
-        # lets base.html highlight the matching navbar link
         "active_category_id": category.id,
     }
-
     return render(request, "pages/blog/page_category.html", context)
 
 
 def post_detail(request, slug):
     """
     Renders a single published blog post matching the URL slug.
-
-    NOTE: the '<slug:slug>/' route is currently wired to blogs.views.blogs, so
-    this view is not reachable through blog_main/urls.py.
     """
-    # SELECT * FROM blogs_blog WHERE slug=slug AND status='Published' LIMIT 1;
     post = get_object_or_404(
         Blog.objects.select_related("category", "author"),
         slug=slug,
         status="Published",
     )
-
-    context = {
-        "post": post,
-    }
-
+    context = {"post": post}
     return render(request, "pages/blog/page_post_detail.html", context)
 
 
 def blogs(request, slug):
     """
-    Single post detail view used by the 'post_detail' URL name.
+    Single post detail view handling article display, like status, and comment submissions.
     """
-    # 'iexact' ignores uppercase/lowercase differences
     single_post = get_object_or_404(
         Blog.objects.select_related("category", "author"),
         slug__iexact=slug,
         status="Published",
     )
 
+    # Handle Comment Submission
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            messages.warning(request, "You must be logged in to leave a response.")
+            return redirect(f"/login/?next={request.path}")
+
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.user = request.user
+            comment.blog = single_post
+            comment.save()
+            messages.success(request, "Your response has been published!")
+            return redirect("post_detail", slug=single_post.slug)
+    else:
+        comment_form = CommentForm()
+
+    # Fetch comments (newest first)
+    comments = single_post.comments.select_related("user").all()
+
+    # Check if the logged-in user liked this post
+    is_liked = False
+    if request.user.is_authenticated:
+        is_liked = single_post.likes.filter(id=request.user.id).exists()
+
     context = {
         "single_post": single_post,
         "active_category_id": single_post.category_id,
+        "comments": comments,
+        "comment_form": comment_form,
+        "is_liked": is_liked,
+        "likes_count": single_post.likes.count(),
+        "comments_count": comments.count(),
     }
     return render(request, "pages/blog/page_blog_list.html", context)
+
+
+@login_required
+def toggle_like(request, pk):
+    """
+    Toggles the like status of a blog post for the authenticated user.
+    """
+    post = get_object_or_404(Blog, pk=pk)
+    if post.likes.filter(id=request.user.id).exists():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
+    return redirect("post_detail", slug=post.slug)
+
 
 
 def about(request):
@@ -122,8 +159,13 @@ def search(request):
                 status="Published",
             )
             .select_related("category", "author")
+            .annotate(
+                total_likes=Count("likes", distinct=True),
+                total_comments=Count("comments", distinct=True),
+            )
             .distinct()
         )
+
 
     # 3. Package results and search term into context
     context = {

@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Count
 from blogs.models import Blog
 
 
@@ -10,9 +11,16 @@ def home(request):
     so it does not need to be added here.
     """
 
-    # Newest first comes from Blog.Meta.ordering
-    # select_related avoids a query per card for category/author
-    published = Blog.objects.filter(status="Published").select_related("category", "author")
+    # select_related avoids queries for category/author
+    # annotate calculates total_likes and total_comments in 1 query (kills N+1 problem)
+    published = (
+        Blog.objects.filter(status="Published")
+        .select_related("category", "author")
+        .annotate(
+            total_likes=Count("likes", distinct=True),
+            total_comments=Count("comments", distinct=True),
+        )
+    )
 
     context = {
         "featured_posts": published.filter(is_featured=True)[:4],
@@ -20,3 +28,4 @@ def home(request):
     }
 
     return render(request, "pages/blog/page_home.html", context)
+
