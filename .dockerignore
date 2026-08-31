@@ -1,0 +1,38 @@
+# Virtual Environments & Packages
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Local Environment Variables & Secrets
+.env
+CREDENTIALS.md
+
+# Local Database
+db.sqlite3
+db.sqlite3-journal
+
+# Windows / Standalone Binaries
+tools/
+*.exe
+*.bat
+*.ps1
+
+# Git & IDEs
+.git/
+.gitignore
+.dockerignore
+.vscode/
+.idea/
+.claude/
+
+# Documentation & Scratch Files
+*.md
+!README.md
+instructions.md
+auth-ui-visual-polish-instructions.md
+PROJECT_CONTEXT_PROMPT.md
+PROJECT_CONTEXT_MINI.md
