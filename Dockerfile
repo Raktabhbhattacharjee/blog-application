@@ -19,7 +19,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # Copy dependency manifests first
 COPY pyproject.toml uv.lock ./
 
-# Install dependencies into virtual environment (excluding dev dependencies)
+# Install dependencies into virtual environment
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project --no-dev
 
@@ -29,15 +29,18 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Copy project files
 COPY . .
 
-# Final sync to install the project itself if package
+# Final sync to install the project itself if packaged
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev
 
-# Create media and static directories with proper permissions
+# Create media and static directories
 RUN mkdir -p /app/media /app/static
 
-# Expose port
+# Collect static files for WhiteNoise/production serving
+RUN python manage.py collectstatic --noinput
+
+# Expose port 8000
 EXPOSE 8000
 
-# Default startup command (runs migrations, collects static, starts server)
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Production startup command using Gunicorn WSGI server
+CMD ["gunicorn", "blog_main.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
