@@ -18,7 +18,10 @@ def home(request):
     """
     published = Blog.objects.filter(status="Published").select_related(
         "category", "author"
-    )
+    ).annotate(
+        total_likes=Count("likes", distinct=True),
+        total_comments=Count("comments", distinct=True),
+    ).order_by("-created_at")
 
     context = {
         # SELECT * FROM blogs_blog WHERE is_featured = True AND status = 'Published';
@@ -62,7 +65,7 @@ def post_detail(request, slug):
         status="Published",
     )
     context = {"post": post}
-    return render(request, "pages/blog/page_post_detail.html", context)
+    return blogs(request, slug)
 
 
 def blogs(request, slug):
@@ -108,6 +111,7 @@ def blogs(request, slug):
         "is_liked": is_liked,
         "likes_count": single_post.likes.count(),
         "comments_count": comments.count(),
+        "keyword": "",
     }
     return render(request, "pages/blog/page_blog_list.html", context)
 
@@ -146,7 +150,7 @@ def search(request):
     # 1. Grab the search keyword from the GET query parameters (?keyword=...)
     keyword = request.GET.get("keyword", "").strip()
 
-    blogs = Blog.objects.none()  # Start with an empty QuerySet
+    blogs = Blog.objects.none()  # Empty until a term is supplied
 
     # 2. Pattern match using Q objects if a keyword was typed
     if keyword:
@@ -164,6 +168,7 @@ def search(request):
                 total_comments=Count("comments", distinct=True),
             )
             .distinct()
+            .order_by("-created_at")
         )
 
 
