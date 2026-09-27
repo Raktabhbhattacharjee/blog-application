@@ -79,8 +79,11 @@ DevChronicle/
 │   ├── components/            # Reusable partials (Cards, Navbars, Stat widgets)
 │   └── pages/                 # Full pages (Author Dashboard, Admin Overview, Detail, Home)
 │
+├── nginx/                     # 🛡️ NGINX REVERSE PROXY
+│   └── default.conf           # Static/media serving & Gunicorn proxy rules
+│
 ├── Dockerfile                 # Multi-stage production container definition (uv + Python 3.13)
-├── docker-compose.yml         # Production multi-service orchestration (Web + PostgreSQL)
+├── docker-compose.yml         # Production multi-service orchestration (Web + PostgreSQL + Nginx)
 └── pyproject.toml             # uv package manifest and project metadata
 ```
 
@@ -103,11 +106,7 @@ DevChronicle/
    SECRET_KEY=your-generated-super-secret-key
    ALLOWED_HOSTS=.onrender.com,yourdomain.com
    CSRF_TRUSTED_ORIGINS=https://*.onrender.com,https://yourdomain.com
-   POSTGRES_DB=your_db_name
-   POSTGRES_USER=your_db_user
-   POSTGRES_PASSWORD=your_db_password
-   POSTGRES_HOST=your_db_host
-   POSTGRES_PORT=5432
+   DATABASE_URL=postgresql://user:password@host:5432/dbname
    ```
 5. **Mount a Persistent Disk for Uploads**:
    * Mount path: `/app/media` (ensures user-uploaded blog covers are never lost on restart).
@@ -115,7 +114,12 @@ DevChronicle/
 
 ---
 
-### Option B: Docker Compose (VPS: AWS EC2 / DigitalOcean / Hetzner)
+### Option B: Docker Compose with Nginx (VPS: AWS EC2 / DigitalOcean / Hetzner)
+
+The project includes an **Nginx Reverse Proxy** container that:
+- Listens on port `80` (HTTP entrypoint).
+- Serves static assets (`/static/`) and media uploads (`/media/`) directly via shared Docker volumes at high speed.
+- Proxies all dynamic requests to Gunicorn (`web:8000`).
 
 1. Clone the repository on your server:
    ```bash
@@ -130,18 +134,19 @@ DevChronicle/
    nano .env
    ```
 
-3. Launch the application stack with Docker Compose:
+3. Launch the full production stack (Django + Postgres + Nginx):
    ```bash
    docker compose up -d --build
    ```
 
-4. Run migrations and create a superuser inside the container:
+4. Create an admin superuser inside the container:
    ```bash
-   docker compose exec web python manage.py migrate
    docker compose exec web python manage.py createsuperuser
    ```
 
-Your application is now running with Gunicorn and PostgreSQL!
+5. Visit `http://your-server-ip` or `http://localhost` (no port number needed, Nginx serves on default HTTP port 80).
+
+Your application is now running with Nginx, Gunicorn, and PostgreSQL!
 
 ---
 

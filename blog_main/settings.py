@@ -86,9 +86,24 @@ WSGI_APPLICATION = "blog_main.wsgi.application"
 # -----------------------------------------------------------------------------
 # Database Configuration
 # -----------------------------------------------------------------------------
-# If PostgreSQL environment variables are provided, connect to Postgres.
-# Otherwise, default to SQLite for local development & simple container testing.
-if os.getenv("POSTGRES_DB"):
+# 1. Check if Render / Cloud provides a full DATABASE_URL
+# 2. Check if individual POSTGRES_* environment variables are provided
+# 3. Otherwise, default to SQLite for local development & simple container testing.
+import urllib.parse
+
+if os.getenv("DATABASE_URL"):
+    db_url = urllib.parse.urlparse(os.environ["DATABASE_URL"])
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": db_url.path.lstrip("/"),
+            "USER": db_url.username or "postgres",
+            "PASSWORD": db_url.password or "",
+            "HOST": db_url.hostname or "localhost",
+            "PORT": str(db_url.port or 5432),
+        }
+    }
+elif os.getenv("POSTGRES_DB"):
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",

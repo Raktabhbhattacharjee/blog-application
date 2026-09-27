@@ -39,8 +39,14 @@ RUN mkdir -p /app/media /app/static
 # Collect static files for WhiteNoise/production serving
 RUN python manage.py collectstatic --noinput
 
+# Ensure entrypoint script is executable
+RUN chmod +x /app/entrypoint.sh
+
 # Expose port 8000
 EXPOSE 8000
+
+# Set entrypoint to run migrations on container launch
+ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Production startup command using Gunicorn WSGI server
 CMD ["gunicorn", "blog_main.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
